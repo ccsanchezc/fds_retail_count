@@ -8,7 +8,7 @@ import 'package:fds_retail_count/models/zonasdb.dart';
 import 'package:sqflite/sql.dart';
 import 'package:sqflite/sqlite_api.dart';
 
-/*
+
 class DatabaseProvider{
   DatabaseProvider._();
 
@@ -91,6 +91,7 @@ class DatabaseProvider{
         where: "id = ?", whereArgs: [material.id]);
     return response;
   }
+  /*
 // INICIO DE ZONAS DB
   //Query
   //muestra todos los clientes de la base de datos
@@ -144,5 +145,6 @@ class DatabaseProvider{
         where: "id = ?", whereArgs: [material.id]);
     return response;
   }
+  
+   */
 }
-*/
