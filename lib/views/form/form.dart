@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
@@ -37,14 +39,7 @@ class FormPageState extends State<FormPage> {
         top: false,
         bottom: false,
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Text("Soy 1"),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text("Soy 2"),
-          ),
+
           Expanded(flex: 8, child: FormBuilder()),
         ]),
       ),
@@ -140,7 +135,9 @@ class FormPageState extends State<FormPage> {
       showMessage('Algo fallo!  Por favor revisar y corregir.');
     } else {
       form.save(); //This invokes each onSaved event
-
+      zonas.add(Zona(namezone, DateTime.now(),Random().nextInt(1222)));
+      form.reset();
+      Navigator.pop(context);
       print('Form save called, newContact is now up to date...');
       /*print('Email: ${newContact.name}');
       print('Dob: ${newContact.dob}');

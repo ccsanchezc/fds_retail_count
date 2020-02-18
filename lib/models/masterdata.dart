@@ -1,4 +1,4 @@
-class Material{
+class Material_data{
   var material;
   String name;
   String color;
@@ -8,7 +8,7 @@ class Material{
   String mvgr1;
   String cantidad;
 
-  Material ({this.material, this.name, this.color, this.talla, this.bar_code, this.depto, this.mvgr1, this.cantidad});
+  Material_data ({this.material, this.name, this.color, this.talla, this.bar_code, this.depto, this.mvgr1, this.cantidad});
 
   //To insert the data in the bd, we need to convert it into a Map
   //Para insertar los datos en la bd, necesitamos convertirlo en un Map
@@ -25,7 +25,7 @@ class Material{
 
   //to receive the data we need to pass it from Map to json
   //para recibir los datos necesitamos pasarlo de Map a json
-  factory Material.fromMap(Map<String, dynamic> json) => new Material(
+  factory Material_data.fromMap(Map<String, dynamic> json) => new Material_data(
     material: json["material"],
     name: json["name"],
     color: json["color"],

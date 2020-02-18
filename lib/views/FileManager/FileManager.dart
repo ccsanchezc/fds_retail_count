@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
-import 'package:fds_retail_count/models/zona.dart';
+import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
+import 'package:fds_retail_count/utils/FileUtils.dart';
+import 'package:fds_retail_count/db/database.dart';
+import 'dart:convert';
 
-class FileManager extends StatefulWidget {
-  String namezone;
-  FileManager({Key key, @required this.namezone}) : super(key: key);
+class FileManagerPage extends StatefulWidget {
   @override
-  FileManagerState createState() => FileManagerState(this.namezone);
+  FileManagerPageState createState() => FileManagerPageState();
 }
 
-class FileManagerState extends State<FileManager> {
-  String namezone;
-  FileManagerState(this.namezone);
+class FileManagerPageState extends State<FileManagerPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
 
   @override
   void initState() {
@@ -25,31 +23,91 @@ class FileManagerState extends State<FileManager> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Custom FILE ' ),
-        backgroundColor: AppColors.primaryColor,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.add)),
+                Tab(icon: Icon(Icons.storage))
+              ],
+            ),
+            title: Text('Configuración'),
+          ),
+          body: TabBarView(
+            children: [
+              FilesManager(),
+              Text("Conexión SAP..."),
+            ],
+          ),
+        ),
       ),
-      //body: _buildTableControll(),
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Text("Soy 1"),
+    );
+  }
+
+  Widget FilesManager() {
+    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      Expanded(
+        flex: 1,
+        child: FlatButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          disabledColor: Colors.grey,
+          disabledTextColor: Colors.black,
+          padding: EdgeInsets.all(8.0),
+          splashColor: Colors.blueAccent,
+          onPressed: () {
+            final promise = FileUtils.readFromFile();
+            promise.then((res) {
+              _format(res);
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Alerta"),
+                      content: Text("Se cargo correctamente el archivo"),
+                    );
+                  });
+            }).catchError((onError) {
+              print('Caught $onError'); // Handle the error.
+            });
+          },
+          child: Text(
+            "Cargar TXT",
+            style: TextStyle(fontSize: 20.0),
           ),
-          Expanded(
-            flex: 1,
-            child: Text("Soy 2"),
-          ),
-         // Expanded(flex: 8, child: FormBuilder()),
-        ]),
+        ),
       ),
 
-      backgroundColor: AppColors.statusBarColor,
-    );
+      Expanded(
+        flex: 9,
+        child: Text(""),
+      )
+    ]);
+  }
+
+  _format(String valor) {
+
+
+
+  //   List<String> mate = valor.split("\r\n");
+    //for (var name in mate) {
+      //Map userMap = jsonDecode(name.replaceAll("\t", " "));
+      //var user = Material_data.fromMap(userMap);
+      //print(user);
+
+    //print(mate.length);
+
+
+//    String jsonTags = jsonEncode(valor.split("\r\n"));
+
+  //  jsonTags = jsonEncode(jsonTags.split("\t"));
+    //print(jsonTags);
+    //DatabaseProvider.db.addMaterialToDatabase(new Material(valor.));
   }
 
   Widget FormBuilder() {
@@ -66,7 +124,7 @@ class FileManagerState extends State<FileManager> {
               labelText: 'Codigo de barras',
             ),
             validator: (value) =>
-            value.isEmpty ? 'Codigo de barras requerido' : null,
+                value.isEmpty ? 'Codigo de barras requerido' : null,
             keyboardType: TextInputType.number,
             inputFormatters: [
               WhitelistingTextInputFormatter.digitsOnly,
@@ -88,7 +146,7 @@ class FileManagerState extends State<FileManager> {
               labelText: 'Nombre del material',
             ),
             validator: (value) =>
-            value.isEmpty ? 'Nombre Material requerido' : null,
+                value.isEmpty ? 'Nombre Material requerido' : null,
             keyboardType: TextInputType.text,
           ),
           new TextFormField(
@@ -152,8 +210,14 @@ class FileManagerState extends State<FileManager> {
     }
   }
 
-  void showMessage(String message, [MaterialColor color = Colors.red]) {
-    _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(backgroundColor: color, content: new Text(message)));
+   showMessage(String message) {
+   return showDialog(
+       context: context,
+       builder: (BuildContext context) {
+         return AlertDialog(
+           title: Text("Alerta"),
+           content: Text("Nombre de zona está vacio"),
+         );
+       });;
   }
 }

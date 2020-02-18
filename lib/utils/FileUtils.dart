@@ -24,7 +24,8 @@ class FileUtils {
       //final file = await getFile;
       final file = await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: 'txt');
       String fileContents = await file.readAsString();
-      print(fileContents);
+
+    //  print(fileContents);
       return fileContents;
     } catch (e) {
       return "";

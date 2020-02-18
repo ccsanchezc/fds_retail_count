@@ -25,11 +25,11 @@ final List<Zona> zonas =[
   Zona('Dhaka', DateTime.now(), 14399000),
   Zona('Guangzhou', DateTime.now(), 14043500),
   Zona('Istanbul', DateTime.now(), 14025000),
-  Zona('Tokyo', DateTime.now(), 13839910),
-  Zona('Tokyo', DateTime.now(), 13839910),
-  Zona('Tokyo', DateTime.now(), 13839910),
-  Zona('Tokyo', DateTime.now(), 13839910),
-  Zona('Tokyo', DateTime.now(), 13839910),
+  //Zona('Tokyo', DateTime.now(), 13839910),
+  //Zona('Tokyo', DateTime.now(), 13839910),
+  //Zona('Tokyo', DateTime.now(), 13839910),
+  //Zona('Tokyo', DateTime.now(), 13839910),
+ // Zona('Tokyo', DateTime.now(), 13839910),
   Zona('Tokyo', DateTime.now(), 13839910),
 ];
 //comment test for initial commit upload all project

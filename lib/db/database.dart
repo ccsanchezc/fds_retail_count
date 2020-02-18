@@ -42,27 +42,27 @@ class DatabaseProvider{
 
   //Query
   //muestra todos los clientes de la base de datos
-  Future<List<Material>> getAllMaterial() async {
+  Future<List<Material_data>> getAllMaterial() async {
     final db = await database;
     var response = await db.query("Material");
-    List<Material> list = response.map((c) => Material.fromMap(c)).toList();
+    List<Material_data> list = response.map((c) => Material_data.fromMap(c)).toList();
     return list;
   }
 
   //Query
   //muestra un solo cliente por el id la base de datos
-  Future<Material> getMaterialWithId(int id) async {
+  Future<Material_data> getMaterialWithId(int id) async {
     final db = await database;
     var response = await db.query("Material", where: "id = ?", whereArgs: [id]);
-    return response.isNotEmpty ? Material.fromMap(response.first) : null;
+    return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
   //Insert
-  addMaterialToDatabase(Material material) async {
+  addMaterialToDatabase(Material_data material) async {
     final db = await database;
-    var table = await db.rawQuery("SELECT MAX(material)+1 as material FROM Material");
-    int id = table.first["material"];
-    material.material = id;
+    //var table = await db.rawQuery("SELECT MAX(material)+1 as material FROM Material");
+    //int id = table.first["material"];
+   //material.material = id;
     var raw = await db.insert(
       "Material",
       material.toMap(),
@@ -86,7 +86,7 @@ class DatabaseProvider{
   }
 
   //Update
-  updateMaterial(Material material) async {
+  updateMaterial(Material_data material) async {
     final db = await database;
     var response = await db.update("Material", material.toMap(),
         where: "material = ?", whereArgs: [material.material]);

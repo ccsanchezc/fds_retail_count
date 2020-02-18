@@ -1,8 +1,10 @@
+import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
 import 'package:date_format/date_format.dart';
 import 'package:fds_retail_count/views/form/form.dart';
+import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -36,7 +38,13 @@ class HomePageState extends State<HomePage> {
        actions: <Widget>[
          IconButton(
            icon: Icon( Icons.settings ),
-         )
+           onPressed: () {
+             Navigator.push(
+               context,
+               MaterialPageRoute(builder: (context) => FileManagerPage()),
+             );
+             }
+         ),
        ],
       ),
       //body: _buildTableControll(),
