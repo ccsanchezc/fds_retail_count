@@ -7,7 +7,9 @@ class Material_data{
   String depto;
   String mvgr1;
   String cantidad;
-
+  @override toString(){
+    return this.material + this.name  + this.color  +this.talla  + this.bar_code  + this.depto  + this.mvgr1  + this.cantidad;
+  }
   Material_data ({this.material, this.name, this.color, this.talla, this.bar_code, this.depto, this.mvgr1, this.cantidad});
 
   //To insert the data in the bd, we need to convert it into a Map
@@ -25,7 +27,8 @@ class Material_data{
 
   //to receive the data we need to pass it from Map to json
   //para recibir los datos necesitamos pasarlo de Map a json
-  factory Material_data.fromMap(Map<String, dynamic> json) => new Material_data(
+  //factory Material_data.fromMap(Map<String, dynamic> json) => new Material_data(
+  factory Material_data.fromMap(dynamic json) => new Material_data(
     material: json["material"],
     name: json["name"],
     color: json["color"],
@@ -35,28 +38,42 @@ class Material_data{
     mvgr1: json["mvgr1"],
     cantidad: json["cantidad"],
   );
+
 }
-
+final List<String> Material_model = [
+  'material',
+  'name',
+  'color',
+  'talla',
+  'bar_code',
+  'depto',
+  'mvgr1',
+  'cantidad',
+];
 class Zona_Field{
-  int id;
-  String name;
-  String phone;
-
- Zona_Field ({this.id, this.name, this.phone});
+  var zona;
+  String bar_code;
+  int canti_count;
+  @override toString(){
+    return this.zona + this.bar_code  + this.canti_count;
+  }
+  Zona_Field ({this.zona, this.bar_code, this.canti_count});
 
   //To insert the data in the bd, we need to convert it into a Map
   //Para insertar los datos en la bd, necesitamos convertirlo en un Map
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "name": name,
-    "phone": phone,
+    "zona": zona,
+    "bar_code": bar_code,
+    "canti_count": canti_count,
   };
 
   //to receive the data we need to pass it from Map to json
   //para recibir los datos necesitamos pasarlo de Map a json
-  factory Zona_Field.fromMap(Map<String, dynamic> json) => new Zona_Field(
-    id: json["id"],
-    name: json["name"],
-    phone: json["phone"],
+  //factory Material_data.fromMap(Map<String, dynamic> json) => new Material_data(
+  factory Zona_Field.fromMap(dynamic json) => new Zona_Field(
+    zona: json["zona"],
+    bar_code: json["bar_code"],
+    canti_count: json["canti_count"],
   );
+
 }

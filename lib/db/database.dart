@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,16 +7,15 @@ import 'package:fds_retail_count/models/zonasdb.dart';
 import 'package:sqflite/sql.dart';
 import 'package:sqflite/sqlite_api.dart';
 
-
-class DatabaseProvider{
+class DatabaseProvider {
   DatabaseProvider._();
 
-  static final  DatabaseProvider db = DatabaseProvider._();
+  static final DatabaseProvider db = DatabaseProvider._();
   Database _database;
 
   //para evitar que abra varias conexciones una y otra vez podemos usar algo como esto..
   Future<Database> get database async {
-    if(_database != null) return _database;
+    if (_database != null) return _database;
     _database = await getDatabaseInstanace();
     return _database;
   }
@@ -27,17 +25,21 @@ class DatabaseProvider{
     String path = join(directory.path, "data.db");
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-          await db.execute("CREATE TABLE Material ("
-              "material varchar(18) primary key,"
-              "name TEXT,"
-              "color TEXT"
-              "talla TEXT"
-              "bar_code TEXT"
-              "depto TEXT"
-              "mvgr1 TEXT"
-              "cantidad TEXT"
-              );
-        });
+      await db.execute("CREATE TABLE Material ("
+          "material varchar(18) primary key,"
+          "name TEXT,"
+          "color TEXT,"
+          "talla TEXT,"
+          "bar_code TEXT,"
+          "depto TEXT,"
+          "mvgr1 TEXT,"
+          "cantidad TEXT); "
+          "CREATE TABLE Zona ("
+          "zona varchar(18) primary key,"
+          "bar_code TEXT primary key,"
+          "canti_count int"
+          ") ");
+    });
   }
 
   //Query
@@ -45,15 +47,22 @@ class DatabaseProvider{
   Future<List<Material_data>> getAllMaterial() async {
     final db = await database;
     var response = await db.query("Material");
-    List<Material_data> list = response.map((c) => Material_data.fromMap(c)).toList();
+    List<Material_data> list =
+        response.map((c) => Material_data.fromMap(c)).toList();
     return list;
   }
 
   //Query
   //muestra un solo cliente por el id la base de datos
-  Future<Material_data> getMaterialWithId(int id) async {
+  Future<Material_data> getMaterialWithId(var id) async {
     final db = await database;
-    var response = await db.query("Material", where: "id = ?", whereArgs: [id]);
+    var response =   await db.query("Material", where: "material = ?", whereArgs: [id]);
+    return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
+  }
+
+  Future<Material_data> getMaterialBarCodeWithId(var id) async {
+    final db = await database;
+    var response =  await db.query("Material", where: "bar_code = ?", whereArgs: [id]);
     return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
@@ -62,14 +71,16 @@ class DatabaseProvider{
     final db = await database;
     //var table = await db.rawQuery("SELECT MAX(material)+1 as material FROM Material");
     //int id = table.first["material"];
-   //material.material = id;
+    //material.material = id;
+
     var raw = await db.insert(
       "Material",
       material.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    print("sali");
+    print(raw);
     return raw;
-
   }
 
   //Delete
@@ -92,31 +103,29 @@ class DatabaseProvider{
         where: "material = ?", whereArgs: [material.material]);
     return response;
   }
-  /*
+
 // INICIO DE ZONAS DB
   //Query
   //muestra todos los clientes de la base de datos
-  Future<List<Material>> getAllMaterial() async {
+  Future<List<Zona_Field>> getAllZona() async {
     final db = await database;
-    var response = await db.query("Material");
-    List<Material> list = response.map((c) => Material.fromMap(c)).toList();
+    var response = await db.query("Zona");
+    List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
     return list;
   }
 
   //Query
   //muestra un solo cliente por el id la base de datos
-  Future<Material> getMaterialWithId(int id) async {
+  Future<Zona_Field> getZonaWithId(int id) async {
     final db = await database;
-    var response = await db.query("Material", where: "id = ?", whereArgs: [id]);
-    return response.isNotEmpty ? Material.fromMap(response.first) : null;
+    var response = await db.query("Zona", where: "zona = ?", whereArgs: [id]);
+    return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
   }
 
   //Insert
-  addMaterialToDatabase(Material material) async {
+  addZonaToDatabase(Zona_Field material) async {
     final db = await database;
-    var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Client");
-    int id = table.first["id"];
-    material.id = id;
+
     var raw = await db.insert(
       "Material",
       material.toMap(),
@@ -128,24 +137,24 @@ class DatabaseProvider{
 
   //Delete
   //Delete client with id
-  deleteMaterialWithId(int id) async {
+  deleteZonaWithId(int id) async {
     final db = await database;
-    return db.delete("Material", where: "id = ?", whereArgs: [id]);
+    return db.delete("Zona", where: "zona = ?", whereArgs: [id]);
   }
 
   //Delete all clients
-  deleteAllMaterial() async {
+  deleteAllZona() async {
     final db = await database;
-    db.delete("Material");
+    db.delete("Zona");
   }
 
   //Update
-  updateMaterial(Material material) async {
+  updateZona(Zona_Field zona) async {
     final db = await database;
-    var response = await db.update("Material", material.toMap(),
-        where: "id = ?", whereArgs: [material.id]);
+    var response = await db.update("Zona", zona.toMap(),
+        where: "zona = ?", whereArgs: [zona.zona]);
     return response;
   }
   
-   */
+
 }

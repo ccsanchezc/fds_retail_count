@@ -1,20 +1,35 @@
 import 'dart:math';
 
+import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
+import 'package:fds_retail_count/models/Material_data.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
+import 'package:fds_retail_count/db/database.dart';
 
 class FormPage extends StatefulWidget {
   String namezone;
+
   FormPage({Key key, @required this.namezone}) : super(key: key);
   @override
   FormPageState createState() => FormPageState(this.namezone);
 }
 
 class FormPageState extends State<FormPage> {
+
+  final material = new  TextEditingController() ;
+  final name = new  TextEditingController();
+  final  color = new  TextEditingController();
+  final  talla = new  TextEditingController();
+  final bar_code = new  TextEditingController();
+  final depto = new  TextEditingController();
+  final  mvgr1 = new  TextEditingController();
+  final  cantidad = new  TextEditingController();
+
   String namezone;
+  Material_data materialinfo = new Material_data();
   FormPageState(this.namezone);
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -24,6 +39,7 @@ class FormPageState extends State<FormPage> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -39,7 +55,6 @@ class FormPageState extends State<FormPage> {
         top: false,
         bottom: false,
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-
           Expanded(flex: 8, child: FormBuilder()),
         ]),
       ),
@@ -61,12 +76,24 @@ class FormPageState extends State<FormPage> {
               hintText: 'Codigo de barras',
               labelText: 'Codigo de barras',
             ),
+            controller: this.bar_code,
+            onChanged: (value) {
+              if (value.length > 0) {
+                var promise = DatabaseProvider.db.getMaterialBarCodeWithId(value);
+                promise.then((res) {
+                  this.materialinfo = res;
+                  _updatecontroller();
+                  print(res.toString() );
+                }).catchError((onError) {
+                  _clearcontroller();
+                  print('Caught $onError'); // Handle the error.
+                });
+              }
+            },
             validator: (value) =>
                 value.isEmpty ? 'Codigo de barras requerido' : null,
             keyboardType: TextInputType.number,
-            inputFormatters: [
-              WhitelistingTextInputFormatter.digitsOnly,
-            ],
+
           ),
           new TextFormField(
             decoration: const InputDecoration(
@@ -74,8 +101,24 @@ class FormPageState extends State<FormPage> {
               hintText: 'Material',
               labelText: 'Material',
             ),
+            controller: this.material  ,
+            onChanged: (value) {
+              if (value.length > 0) {
+                var promise = DatabaseProvider.db.getMaterialWithId(value);
+                promise.then((res) {
+                  this.materialinfo = res;
+                  _updatecontroller();
+                }).catchError((onError) {
+                  _clearcontroller();
+                  print('Caught $onError'); // Handle the error.
+                });
+              }
+            },
             validator: (value) => value.isEmpty ? 'Material requerido' : null,
             keyboardType: TextInputType.number,
+            inputFormatters: [
+              WhitelistingTextInputFormatter.digitsOnly,
+            ],
           ),
           new TextFormField(
             decoration: const InputDecoration(
@@ -83,6 +126,7 @@ class FormPageState extends State<FormPage> {
               hintText: 'Nombre del material',
               labelText: 'Nombre del material',
             ),
+            controller: this.name  ,
             validator: (value) =>
                 value.isEmpty ? 'Nombre Material requerido' : null,
             keyboardType: TextInputType.text,
@@ -93,9 +137,11 @@ class FormPageState extends State<FormPage> {
               hintText: 'Color',
               labelText: 'Color',
             ),
+            controller: this.color  ,
             //validator: (value) => value.isEmpty ? 'Color' : null,
             keyboardType: TextInputType.number,
             enabled: false,
+
             inputFormatters: [
               WhitelistingTextInputFormatter.digitsOnly,
             ],
@@ -106,6 +152,7 @@ class FormPageState extends State<FormPage> {
               hintText: 'Talla',
               labelText: 'Talla',
             ),
+            controller: this.talla  ,
             enabled: false,
             keyboardType: TextInputType.number,
           ),
@@ -115,6 +162,10 @@ class FormPageState extends State<FormPage> {
               hintText: 'Cantidad',
               labelText: 'Cantidad',
             ),
+            onSaved: (value){
+                this.materialinfo.cantidad = value;
+            },
+            controller: this.cantidad  ,
             keyboardType: TextInputType.number,
           ),
           new Container(
@@ -127,7 +178,26 @@ class FormPageState extends State<FormPage> {
       ),
     );
   }
-
+  void _clearcontroller(){
+    //this.material.text  = "";
+    this.name.text = "";
+    this.color.text = "";
+    this.talla.text = "";
+    //this.bar_code.text = "";
+    this.depto.text = "";
+    this.mvgr1.text = "";
+    this.cantidad.text = "";
+  }
+  void _updatecontroller(){
+     this.material.text  = this.materialinfo.material ;
+     this.name.text = this.materialinfo.name;
+     this.color.text = this.materialinfo.color;
+     this.talla.text = this.materialinfo.talla;
+     this.bar_code.text = this.materialinfo.bar_code;
+     this.depto.text = this.materialinfo.depto;
+     this.mvgr1.text = this.materialinfo.mvgr1;
+     this.cantidad.text = this.materialinfo.cantidad;
+  }
   void _submitForm() {
     final FormState form = _formKey.currentState;
 
@@ -135,7 +205,7 @@ class FormPageState extends State<FormPage> {
       showMessage('Algo fallo!  Por favor revisar y corregir.');
     } else {
       form.save(); //This invokes each onSaved event
-      zonas.add(Zona(namezone, DateTime.now(),Random().nextInt(1222)));
+      zonas.add(Zona(namezone, DateTime.now(), int.parse(this.materialinfo.cantidad)));
       form.reset();
       Navigator.pop(context);
       print('Form save called, newContact is now up to date...');

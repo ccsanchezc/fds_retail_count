@@ -28,7 +28,6 @@ class FileManagerPageState extends State<FileManagerPage> {
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
-
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
@@ -82,7 +81,6 @@ class FileManagerPageState extends State<FileManagerPage> {
           ),
         ),
       ),
-
       Expanded(
         flex: 9,
         child: Text(""),
@@ -91,23 +89,32 @@ class FileManagerPageState extends State<FileManagerPage> {
   }
 
   _format(String valor) {
+    List<String> mate = valor.split("\r\n");
+    String json_input = "{";
+    DatabaseProvider.db.deleteAllMaterial();
+    for (var name in mate) {
+      List<String> matefinal = name.split("\t").toList();
 
+      for (int i = 0; i < matefinal.length; i++) {
 
+        if(i == matefinal.length - 1 ){
+          json_input = json_input + '"' +Material_model[i].toString()+'"' + ":"  +'"' + matefinal[i]+'"' ;
+        }else{
+          json_input = json_input + '"' +Material_model[i].toString()+'"' + ":"  +'"' + matefinal[i]+'"' + ",";
+        }
 
-  //   List<String> mate = valor.split("\r\n");
-    //for (var name in mate) {
-      //Map userMap = jsonDecode(name.replaceAll("\t", " "));
-      //var user = Material_data.fromMap(userMap);
-      //print(user);
+      }
+      json_input = json_input + "}" ;
 
-    //print(mate.length);
+      Map userMap = jsonDecode(json_input);
+      var user = Material_data.fromMap(userMap).toMap();
+      user["cantidad"] = user["cantidad"].toString().split(".")[0] ;
+    print( user);
+      DatabaseProvider.db.addMaterialToDatabase(new Material_data(material: user["material"],name:user["name"],color: user["color"],talla: user["talla"],
+                                                                  bar_code: user["bar_code"],depto: user["depto"],mvgr1: user["mvgr1"],cantidad:user["cantidad"]));
+      json_input = "{";
+    }
 
-
-//    String jsonTags = jsonEncode(valor.split("\r\n"));
-
-  //  jsonTags = jsonEncode(jsonTags.split("\t"));
-    //print(jsonTags);
-    //DatabaseProvider.db.addMaterialToDatabase(new Material(valor.));
   }
 
   Widget FormBuilder() {
@@ -210,14 +217,15 @@ class FileManagerPageState extends State<FileManagerPage> {
     }
   }
 
-   showMessage(String message) {
-   return showDialog(
-       context: context,
-       builder: (BuildContext context) {
-         return AlertDialog(
-           title: Text("Alerta"),
-           content: Text("Nombre de zona está vacio"),
-         );
-       });;
+  showMessage(String message) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Alerta"),
+            content: Text("Nombre de zona está vacio"),
+          );
+        });
+    ;
   }
 }

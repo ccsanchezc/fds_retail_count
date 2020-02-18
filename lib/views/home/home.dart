@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('App count bola '),
+        title: Text('App count FDS '),
         backgroundColor: AppColors.primaryColor,
        actions: <Widget>[
          IconButton(
