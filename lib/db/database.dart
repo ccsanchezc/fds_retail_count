@@ -28,14 +28,15 @@ class DatabaseProvider{
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
           await db.execute("CREATE TABLE Material ("
-              "id integer primary key,"
+              "material varchar(18) primary key,"
               "name TEXT,"
-              "phone TEXT"
-              ") CREATE TABLE Zonasdb ("
-              "id integer primary key,"
-              "name TEXT,"
-              "phone TEXT"
-              ")");
+              "color TEXT"
+              "talla TEXT"
+              "bar_code TEXT"
+              "depto TEXT"
+              "mvgr1 TEXT"
+              "cantidad TEXT"
+              );
         });
   }
 
@@ -59,9 +60,9 @@ class DatabaseProvider{
   //Insert
   addMaterialToDatabase(Material material) async {
     final db = await database;
-    var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Client");
-    int id = table.first["id"];
-    material.id = id;
+    var table = await db.rawQuery("SELECT MAX(material)+1 as material FROM Material");
+    int id = table.first["material"];
+    material.material = id;
     var raw = await db.insert(
       "Material",
       material.toMap(),
@@ -75,7 +76,7 @@ class DatabaseProvider{
   //Delete client with id
   deleteMaterialWithId(int id) async {
     final db = await database;
-    return db.delete("Material", where: "id = ?", whereArgs: [id]);
+    return db.delete("Material", where: "material = ?", whereArgs: [id]);
   }
 
   //Delete all clients
@@ -88,7 +89,7 @@ class DatabaseProvider{
   updateMaterial(Material material) async {
     final db = await database;
     var response = await db.update("Material", material.toMap(),
-        where: "id = ?", whereArgs: [material.id]);
+        where: "material = ?", whereArgs: [material.material]);
     return response;
   }
   /*
