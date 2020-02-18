@@ -27,7 +27,7 @@ dependencies:
   date_format: ^1.0.8
   sqflite: ^1.1.5
   path_provider: ^0.5.0+1
-  
+  file_picker: ^1.4.3+2 #NEED for read txt from any
 dev_dependencies:
   flutter_test:
     sdk: flutter

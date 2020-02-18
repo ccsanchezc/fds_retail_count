@@ -33,6 +33,11 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('App count bola '),
         backgroundColor: AppColors.primaryColor,
+       actions: <Widget>[
+         IconButton(
+           icon: Icon( Icons.settings ),
+         )
+       ],
       ),
       //body: _buildTableControll(),
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
