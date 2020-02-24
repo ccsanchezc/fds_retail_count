@@ -2,8 +2,10 @@ import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
+import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:date_format/date_format.dart';
 import 'package:fds_retail_count/views/form/form.dart';
+import 'package:fds_retail_count/db/database.dart';
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,11 +16,11 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   final zoneNameController = TextEditingController();
   final List<String> log = <String>[];
-  List<Zona> selectedZona;
+  List<Zona_Field> selectedZona;
   @override
   void initState() {
     super.initState();
-
+    _getAllZonas();
     selectedZona = [];
   }
 
@@ -31,6 +33,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('App count FDS '),
@@ -44,6 +47,11 @@ class HomePageState extends State<HomePage> {
                MaterialPageRoute(builder: (context) => FileManagerPage()),
              );
              }
+         ),
+         IconButton(
+           onPressed: () { _getAllZonas(); },
+           icon: Icon( Icons.refresh ),
+
          ),
        ],
       ),
@@ -79,7 +87,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  void onSelectedRowChanged({bool selected, Zona zonasel}) {
+  void onSelectedRowChanged({bool selected, Zona_Field zonasel}) {
     setState(() {
       if (selected) {
         selectedZona.add(zonasel);
@@ -91,6 +99,7 @@ class HomePageState extends State<HomePage> {
 
   Widget _buildTable() {
     return DataTable(
+
       columns: zonaColumns
           .map(
             (String column) => DataColumn(
@@ -100,15 +109,15 @@ class HomePageState extends State<HomePage> {
             ),
           )
           .toList(),
-      rows: zonas
-          .map((Zona zonas) => DataRow(
+      rows:  ZonasCount
+          .map((Zona_Field zonas) => DataRow(
                 selected: selectedZona.contains(zonas),
                 onSelectChanged: (bool selected) =>
                     onSelectedRowChanged(selected: selected, zonasel: zonas),
                 cells: [
-                  DataCell(Text('${zonas.name}')),
+                  DataCell(Text('${zonas.zona}')),
                   DataCell(Text(_format(zonas.date))),
-                  DataCell(Text('${zonas.count}')),
+                  DataCell(Text('${zonas.canti_count}')),
                 ],
               ))
           .toList(),
@@ -116,9 +125,12 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  String _format(DateTime date) {
-    return (formatDate(
-        DateTime(date.year, date.month, date.day), [yyyy, '-', mm, '-', dd]));
+  String _format(String date) {
+    //print(date);
+   // print(date.substring(0,4));
+   // print(date.substring(4,6));
+   // print(date.substring(6,8));
+    return date;//date.substring(1,4) + "-" + date.substring(4,2)  +  "-" + date.substring(6,2);
   }
 
   Widget inputFieldName() {
@@ -230,5 +242,23 @@ class HomePageState extends State<HomePage> {
         )
       ],
     );
+  }
+  void  _getAllZonas(){
+    ZonasCount.clear();
+    print("entre a traer zonas");
+    final zonafield = DatabaseProvider.db.getAllZona();
+
+    zonafield.then((res) {
+
+      for(int i = 0; i<res.length;i++){
+        ZonasCount.add(res[i]) ;
+      }
+
+    }
+    ).catchError((onError) {
+      print('Caught $onError'); // Handle the error.
+
+    });
+
   }
 }

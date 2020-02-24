@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -33,12 +34,15 @@ class DatabaseProvider {
           "bar_code TEXT,"
           "depto TEXT,"
           "mvgr1 TEXT,"
-          "cantidad TEXT); "
-          "CREATE TABLE Zona ("
-          "zona varchar(18) primary key,"
-          "bar_code TEXT primary key,"
-          "canti_count int"
-          ") ");
+          "cantidad TEXT)  ");
+      await db.execute("CREATE TABLE Zona ("
+          "zona varchar(18)  ,"
+          "material varchar(18)   ,"
+          "bar_code TEXT,"
+          "name TEXT,"
+          "canti_count int,"
+          "date TEXT,"
+          "PRIMARY KEY (zona, material)) ");
     });
   }
 
@@ -56,13 +60,15 @@ class DatabaseProvider {
   //muestra un solo cliente por el id la base de datos
   Future<Material_data> getMaterialWithId(var id) async {
     final db = await database;
-    var response =   await db.query("Material", where: "material = ?", whereArgs: [id]);
+    var response =
+        await db.query("Material", where: "material = ?", whereArgs: [id]);
     return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
   Future<Material_data> getMaterialBarCodeWithId(var id) async {
     final db = await database;
-    var response =  await db.query("Material", where: "bar_code = ?", whereArgs: [id]);
+    var response =
+        await db.query("Material", where: "bar_code = ?", whereArgs: [id]);
     return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
@@ -122,17 +128,40 @@ class DatabaseProvider {
     return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
   }
 
+  Future<Zona_Field> getZonaWithIdMaterial(var id, var mat) async {
+    final db = await database;
+    var response = await db.query("Zona",
+        where: "zona = ? and material = ?", whereArgs: [id, mat]);
+    return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
+  }
+
   //Insert
   addZonaToDatabase(Zona_Field material) async {
     final db = await database;
+    var promise =
+        getZonaWithIdMaterial("" + material.zona, "" + material.material);
+    promise.then((res) {
+      print("agregando");
 
-    var raw = await db.insert(
-      "Material",
-      material.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    return raw;
+      if (res != null) {
+        print("existe");
 
+        res.canti_count = material.canti_count + res.canti_count;
+
+        return updateZona(res);
+      } else {
+        print("nuevo");
+
+        var raw = db.insert(
+          "Zona",
+          material.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        return raw;
+      }
+    }).catchError((onError) {
+      print('Caught $onError'); // Handle the error.
+    });
   }
 
   //Delete
@@ -152,9 +181,7 @@ class DatabaseProvider {
   updateZona(Zona_Field zona) async {
     final db = await database;
     var response = await db.update("Zona", zona.toMap(),
-        where: "zona = ?", whereArgs: [zona.zona]);
+        where: "zona = ? and  material = ?", whereArgs: [zona.zona, zona.material]);
     return response;
   }
-  
-
 }
