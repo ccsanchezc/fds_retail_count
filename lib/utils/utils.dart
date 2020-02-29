@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 class AppConstants {
-  static const appName = "Watch Shop";
+  static const appName = "FDS Retail Count";
 }
 
 class AppFonts {

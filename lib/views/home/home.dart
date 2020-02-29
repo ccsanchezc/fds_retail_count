@@ -1,4 +1,5 @@
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
+import 'package:fds_retail_count/views/detail/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
@@ -33,27 +34,20 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('App count FDS '),
         backgroundColor: AppColors.primaryColor,
-       actions: <Widget>[
-         IconButton(
-           icon: Icon( Icons.settings ),
-           onPressed: () {
-             Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => FileManagerPage()),
-             );
-             }
-         ),
-         IconButton(
-           onPressed: () { _getAllZonas(); },
-           icon: Icon( Icons.refresh ),
-
-         ),
-       ],
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FileManagerPage()),
+                );
+              }),
+        ],
       ),
       //body: _buildTableControll(),
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -65,7 +59,60 @@ class HomePageState extends State<HomePage> {
           flex: 1,
           child: ButtonBars(),
         ),
-        Expanded(flex: 8, child: _buildTableControll()),
+        Expanded(
+          flex: 8,
+          child: FutureBuilder<List<Zona_Field>>(
+            //we call the method, which is in the folder db file database.dart
+            future: DatabaseProvider.db.getAllZona(),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<Zona_Field>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  //Count all records
+                  itemCount: snapshot.data.length,
+                  //all the records that are in the client table are passed to an item Client item = snapshot.data [index];
+                  itemBuilder: (BuildContext context, int index) {
+                    Zona_Field item = snapshot.data[index];
+                    //delete one register for id
+                    return Dismissible(
+                      key: UniqueKey(),
+                      background: Container(color: Colors.red),
+                      onDismissed: (diretion) {
+
+                        DatabaseProvider.db
+                            .deleteZonaWithIddate(item.zona, item.date);
+                      },
+                      //Now we paint the list with all the records, which will have a number, name, phone
+                      child: Card(
+                        child: ListTile(
+                          title: Text(item.zona),
+                          subtitle: Text(item.date),
+                          leading: CircleAvatar(
+                              child: Text(item.canti_count.toString())),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        DetailPage(namezone: item.zona, date: item.date,)));
+                          },
+                          //If we press one of the cards, it takes us to the page to edit, with the data onTap:
+                          //This method is in the file add_editclient.dart
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          //new ListView(
+          //children: ZonasCount.map(_buildItem).toList(),
+        ),
+        //_buildTableControll()),
       ]),
       backgroundColor: AppColors.statusBarColor,
     );
@@ -97,9 +144,29 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  Widget _buildItem(Zona_Field zona) {
+    print("Dentro de listado");
+    print("Soy Zona : " + zona.zona);
+
+    return Card(
+      child: ListTile(
+        title: new Text('Zona : ${zona.zona}'),
+        subtitle: new Text('Fecha: ${zona.date}'),
+        leading: new Icon(Icons.map),
+        onTap: () {
+          _getAllZonasId(zona.zona);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) =>
+                      DetailPage(namezone: zona.zona, date: zona.date)));
+        },
+      ),
+    );
+  }
+
   Widget _buildTable() {
     return DataTable(
-
       columns: zonaColumns
           .map(
             (String column) => DataColumn(
@@ -109,28 +176,26 @@ class HomePageState extends State<HomePage> {
             ),
           )
           .toList(),
-      rows:  ZonasCount
-          .map((Zona_Field zonas) => DataRow(
-                selected: selectedZona.contains(zonas),
-                onSelectChanged: (bool selected) =>
-                    onSelectedRowChanged(selected: selected, zonasel: zonas),
-                cells: [
-                  DataCell(Text('${zonas.zona}')),
-                  DataCell(Text(_format(zonas.date))),
-                  DataCell(Text('${zonas.canti_count}')),
-                ],
-              ))
-          .toList(),
+      rows: ZonasCount.map((Zona_Field zonas) => DataRow(
+            selected: selectedZona.contains(zonas),
+            onSelectChanged: (bool selected) =>
+                onSelectedRowChanged(selected: selected, zonasel: zonas),
+            cells: [
+              DataCell(Text('${zonas.zona}')),
+              DataCell(Text(_format(zonas.date))),
+              DataCell(Text('${zonas.canti_count}')),
+            ],
+          )).toList(),
       sortColumnIndex: 0,
     );
   }
 
   String _format(String date) {
     //print(date);
-   // print(date.substring(0,4));
-   // print(date.substring(4,6));
-   // print(date.substring(6,8));
-    return date;//date.substring(1,4) + "-" + date.substring(4,2)  +  "-" + date.substring(6,2);
+    // print(date.substring(0,4));
+    // print(date.substring(4,6));
+    // print(date.substring(6,8));
+    return date; //date.substring(1,4) + "-" + date.substring(4,2)  +  "-" + date.substring(6,2);
   }
 
   Widget inputFieldName() {
@@ -166,29 +231,26 @@ class HomePageState extends State<HomePage> {
         ButtonBar(
           children: <Widget>[
             FlatButton(
-              child: Text('Eliminar'),
+              child: Text('Eliminar todo'),
               color: Colors.red,
               onPressed: () {
-                if (selectedZona.length == zonas.length) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Alerta"),
-                          content: Text("Se eliminaran todos los registros"),
-                          actions: <Widget>[
-                            FlatButton(
-                                onPressed: () => _deleteSelectAll(),
-                                child: Text('OK')),
-                            FlatButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('CANCEL')),
-                          ],
-                        );
-                      });
-                } else {
-                  _deleteSelectAll();
-                }
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Alerta"),
+                        content: Text("Se eliminaran todos los registros"),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: DatabaseProvider.db.deleteAllZona(),
+                              child: Text('OK')),
+                          FlatButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('CANCEL')),
+                        ],
+                      );
+                    });
+
                 /** */
               },
             ),
@@ -243,22 +305,36 @@ class HomePageState extends State<HomePage> {
       ],
     );
   }
-  void  _getAllZonas(){
+
+  void _getAllZonas() async {
+    print("tengo " + ZonasCount.length.toString());
     ZonasCount.clear();
+    if (selectedZona != null) selectedZona.clear();
     print("entre a traer zonas");
     final zonafield = DatabaseProvider.db.getAllZona();
 
     zonafield.then((res) {
-
-      for(int i = 0; i<res.length;i++){
-        ZonasCount.add(res[i]) ;
+      for (int i = 0; i < res.length; i++) {
+        print(res[i].zona.toString() + "" + res[i].material.toString());
+        ZonasCount.add(res[i]);
       }
-
-    }
-    ).catchError((onError) {
+    }).catchError((onError) {
       print('Caught $onError'); // Handle the error.
-
     });
+  }
 
+  void _getAllZonasId(var id) {
+    ZonasCount.clear();
+
+    final zonafield = DatabaseProvider.db.getZonaWithId(id);
+
+    zonafield.then((res) {
+      for (int i = 0; i < res.length; i++) {
+        print(res[i].zona.toString() + "" + res[i].material.toString());
+        ZonasCount.add(res[i]);
+      }
+    }).catchError((onError) {
+      print('Caught $onError'); // Handle the error.
+    });
   }
 }

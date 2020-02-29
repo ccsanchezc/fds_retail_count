@@ -52,7 +52,7 @@ class FileManagerPageState extends State<FileManagerPage> {
     return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       Expanded(
         flex: 1,
-        child: FlatButton(
+        child : FlatButton(
           color: Colors.blue,
           textColor: Colors.white,
           disabledColor: Colors.grey,
@@ -80,10 +80,38 @@ class FileManagerPageState extends State<FileManagerPage> {
             style: TextStyle(fontSize: 20.0),
           ),
         ),
+
       ),
       Expanded(
         flex: 9,
-        child: Text(""),
+        child:  FlatButton(
+          color: Colors.green,
+          textColor: Colors.white,
+          disabledColor: Colors.grey,
+          disabledTextColor: Colors.black,
+          padding: EdgeInsets.all(8.0),
+          splashColor: Colors.blueAccent,
+          onPressed: () {
+            final promise = FileUtils.readFromFile();
+            promise.then((res) {
+              _format(res);
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Alerta"),
+                      content: Text("Se cargo correctamente el archivo"),
+                    );
+                  });
+            }).catchError((onError) {
+              print('Caught $onError'); // Handle the error.
+            });
+          },
+          child: Text(
+            "Descargar TXT",
+            style: TextStyle(fontSize: 20.0),
+          ),
+        ),
       )
     ]);
   }

@@ -115,26 +115,43 @@ class DatabaseProvider {
   //muestra todos los clientes de la base de datos
   Future<List<Zona_Field>> getAllZona() async {
     final db = await database;
-    var response = await db.query("Zona");
+    //var response = await db.query("Zona zona, date, SUM(canti_count)" , groupBy: "zona , date");
+    var response = await db.rawQuery('SELECT zona,date, SUM(canti_count) as canti_count from ZONA GROUP BY zona,date');
+
     List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+
     return list;
   }
 
   //Query
   //muestra un solo cliente por el id la base de datos
-  Future<Zona_Field> getZonaWithId(int id) async {
+  Future<List<Zona_Field>> getZonaWithId(var id) async {
     final db = await database;
-    var response = await db.query("Zona", where: "zona = ?", whereArgs: [id]);
-    return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
+    var response = await db.query("Zona ", where: "zona = ?", whereArgs: [id]);
+    List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+    return list;
   }
+  Future<List<Zona_Field>> getZonaWithIddate(var id, var date) async {
+    final db = await database;
+    print ("entre a traer cosas");
+    print("ID" +  id + "Date" + date);
+    var response = await db.query("Zona ", where: "zona = ? and date = ?", whereArgs: [id,date]);
 
+    print(response);
+    List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+    return list;
+  }
   Future<Zona_Field> getZonaWithIdMaterial(var id, var mat) async {
     final db = await database;
     var response = await db.query("Zona",
         where: "zona = ? and material = ?", whereArgs: [id, mat]);
     return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
   }
-
+  Future<Zona_Field> getZonaBarcodeCount() async {
+    final db = await database;
+    var response = await db.rawQuery('SELECT barc_code  SUM(canti_count) as canti_count from ZONA GROUP BY bar_code');
+    return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
+  }
   //Insert
   addZonaToDatabase(Zona_Field material) async {
     final db = await database;
@@ -166,9 +183,17 @@ class DatabaseProvider {
 
   //Delete
   //Delete client with id
-  deleteZonaWithId(int id) async {
+  deleteZonaWithId(var id) async {
     final db = await database;
     return db.delete("Zona", where: "zona = ?", whereArgs: [id]);
+  }
+  deleteZonaWithIddate(var id,var date) async {
+    final db = await database;
+    return db.delete("Zona", where: "zona = ? and date = ?", whereArgs: [id, date]);
+  }
+  deleteZonaWithIdMat(var id,var date ,var mat) async {
+    final db = await database;
+    return db.delete("Zona", where: "zona = ? and material = ? and date = ?", whereArgs: [id,  mat, date]);
   }
 
   //Delete all clients
