@@ -51,8 +51,8 @@ class FileManagerPageState extends State<FileManagerPage> {
   Widget FilesManager() {
     return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       Expanded(
-        flex: 1,
-        child : FlatButton(
+        flex: 5,
+        child: FlatButton(
           color: Colors.blue,
           textColor: Colors.white,
           disabledColor: Colors.grey,
@@ -83,8 +83,8 @@ class FileManagerPageState extends State<FileManagerPage> {
 
       ),
       Expanded(
-        flex: 9,
-        child:  FlatButton(
+        flex: 5,
+        child: FlatButton(
           color: Colors.green,
           textColor: Colors.white,
           disabledColor: Colors.grey,
@@ -92,15 +92,14 @@ class FileManagerPageState extends State<FileManagerPage> {
           padding: EdgeInsets.all(8.0),
           splashColor: Colors.blueAccent,
           onPressed: () {
-            final promise = FileUtils.readFromFile();
+            final promise = FileUtils.saveToFile(_export());
             promise.then((res) {
-              _format(res);
               return showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text("Alerta"),
-                      content: Text("Se cargo correctamente el archivo"),
+                      content: Text("Se descargo correctamente el archivo"),
                     );
                   });
             }).catchError((onError) {
@@ -115,7 +114,26 @@ class FileManagerPageState extends State<FileManagerPage> {
       )
     ]);
   }
+  String _export(){
+   final _barcode  = DatabaseProvider.db.getZonaBarcodeCount();
+    String export ="";
 
+    _barcode.then((res) {
+      print("tamaño");
+      print(res.length);
+      for (int i = 0; i < res.length; i++) {
+        print("Ejemplo:" + res[i].toMap().toString());
+        if(i == res.length - 1 ){
+          export = export + res[i].bar_code+ ";" + res[i].canti_count.toString()+ '' ;
+        }else{
+         export = export + res[i].bar_code+ ";" + res[i].canti_count.toString()+ '\n' ;
+        }
+      }
+    }).catchError((onError) {
+      print('Caught $onError'); // Handle the error.
+    });
+    return export;
+  }
   _format(String valor) {
     List<String> mate = valor.split("\r\n");
     String json_input = "{";

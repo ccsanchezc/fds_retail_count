@@ -307,7 +307,6 @@ class HomePageState extends State<HomePage> {
   }
 
   void _getAllZonas() async {
-    print("tengo " + ZonasCount.length.toString());
     ZonasCount.clear();
     if (selectedZona != null) selectedZona.clear();
     print("entre a traer zonas");

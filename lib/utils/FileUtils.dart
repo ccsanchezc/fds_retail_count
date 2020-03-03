@@ -10,12 +10,13 @@ class FileUtils {
 
   static Future<File> get getFile async {
     final path = await getFilePath;
-
-    return File('$path/masterdata.txt');
+   // final path = await FilePicker.getFilePath(type: FileType.ANY);
+    return File('$path/info.txt');
   }
 
   static Future<File> saveToFile(String data) async {
     final file = await getFile;
+    print(file.path);
     return file.writeAsString(data);
   }
 

@@ -147,10 +147,14 @@ class DatabaseProvider {
         where: "zona = ? and material = ?", whereArgs: [id, mat]);
     return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
   }
-  Future<Zona_Field> getZonaBarcodeCount() async {
+  Future<List<Zona_Field>> getZonaBarcodeCount() async {
     final db = await database;
-    var response = await db.rawQuery('SELECT barc_code  SUM(canti_count) as canti_count from ZONA GROUP BY bar_code');
-    return response.isNotEmpty ? Zona_Field.fromMap(response.first) : null;
+
+    var response = await db.rawQuery('SELECT bar_code , SUM(canti_count) as canti_count from ZONA GROUP BY bar_code');
+
+    List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+    //print(list);
+    return list;
   }
   //Insert
   addZonaToDatabase(Zona_Field material) async {
