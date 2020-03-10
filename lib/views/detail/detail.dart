@@ -94,16 +94,5 @@ class DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget _buildItem(Zona_Field zona) {
-    print("Dentro de listado");
-    print(zona.zona);
-    return new ListTile(
-      title: new Text(zona.name),
-      subtitle: new Text('Capital: ${zona.material}'),
-      leading: new Icon(Icons.map),
-      onTap: () {
-        print(zona.canti_count);
-      },
-    );
-  }
+
 }

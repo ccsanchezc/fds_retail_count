@@ -79,7 +79,6 @@ class HomePageState extends State<HomePage> {
                       key: UniqueKey(),
                       background: Container(color: Colors.red),
                       onDismissed: (diretion) {
-
                         DatabaseProvider.db
                             .deleteZonaWithIddate(item.zona, item.date);
                       },
@@ -94,8 +93,10 @@ class HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) =>
-                                        DetailPage(namezone: item.zona, date: item.date,)));
+                                    builder: (_) => DetailPage(
+                                          namezone: item.zona,
+                                          date: item.date,
+                                        )));
                           },
                           //If we press one of the cards, it takes us to the page to edit, with the data onTap:
                           //This method is in the file add_editclient.dart
@@ -307,22 +308,27 @@ class HomePageState extends State<HomePage> {
   }
 
   void _getAllZonas() async {
-    ZonasCount.clear();
-    if (selectedZona != null) selectedZona.clear();
-    print("entre a traer zonas");
-    final zonafield = DatabaseProvider.db.getAllZona();
+    setState(() {
+      ZonasCount.clear();
+      if (selectedZona != null) selectedZona.clear();
+      print("entre a traer zonas");
+      final zonafield = DatabaseProvider.db.getAllZona();
 
-    zonafield.then((res) {
-      for (int i = 0; i < res.length; i++) {
-        print(res[i].zona.toString() + "" + res[i].material.toString());
-        ZonasCount.add(res[i]);
-      }
-    }).catchError((onError) {
-      print('Caught $onError'); // Handle the error.
+      zonafield.then((res) {
+        for (int i = 0; i < res.length; i++) {
+          print(res[i].zona.toString() + "" + res[i].material.toString());
+          ZonasCount.add(res[i]);
+        }
+      }).catchError((onError) {
+        print('Caught $onError'); // Handle the error.
+      });
     });
   }
 
   void _getAllZonasId(var id) {
+    setState(() {
+
+
     ZonasCount.clear();
 
     final zonafield = DatabaseProvider.db.getZonaWithId(id);
@@ -334,6 +340,7 @@ class HomePageState extends State<HomePage> {
       }
     }).catchError((onError) {
       print('Caught $onError'); // Handle the error.
+    });
     });
   }
 }
