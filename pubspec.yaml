@@ -30,6 +30,8 @@ dependencies:
   file_picker: ^1.4.3+2 #NEED for read txt from any
   permission_handler: ^4.4.0
   flutter_speed_dial: ^1.2.5
+  flutter_sparkline: ^0.1.0
+  flutter_staggered_grid_view: ^0.3.0
   #simple_permissions: ^0.1.9
 
 dev_dependencies:

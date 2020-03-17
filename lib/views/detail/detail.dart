@@ -7,6 +7,7 @@ import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
 import 'package:fds_retail_count/db/database.dart';
+import 'package:fds_retail_count/dashboard/dash.dart';
 
 class DetailPage extends StatefulWidget {
   String namezone;
@@ -46,6 +47,16 @@ class DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: Text('Zona: ' + this.namezone),
         backgroundColor: AppColors.primaryColor,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.dashboard),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
+              }),
+        ],
       ),
       //body: _buildTableControll(),
       body: FutureBuilder<List<Zona_Field>>(
@@ -74,7 +85,7 @@ class DetailPageState extends State<DetailPage> {
                     padding: EdgeInsets.only(left: 12, right: 12),
                     child: Card(
                       child: ListTile(
-                        onTap: ,
+                       // onTap: ,
                         title: Text(item.name),
                         subtitle: Text(item.material),
                         leading: CircleAvatar(

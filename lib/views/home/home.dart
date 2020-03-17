@@ -39,7 +39,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:   Text ('App count FDS ')    ,
+        title: Text('App count FDS '),
         backgroundColor: AppColors.primaryColor,
         actions: <Widget>[
           IconButton(
@@ -78,16 +78,20 @@ class HomePageState extends State<HomePage> {
                   itemBuilder: (BuildContext context, int index) {
                     Zona_Field item = snapshot.data[index];
                     //delete one register for id
+
                     return Dismissible(
                       //TRANSFROMAR EN FUNCIÓN
                       key: UniqueKey(),
                       background: Container(color: Colors.red),
                       onDismissed: (diretion) {
-                        DatabaseProvider.db
-                            .deleteZonaWithIddate(item.zona, item.date);
+
+                          DatabaseProvider.db
+                              .deleteZonaWithIddate(item.zona, item.date);
+
+
                       },
                       child: Padding(
-                        padding: EdgeInsets.only(left: 12 , right: 12),
+                        padding: EdgeInsets.only(left: 12, right: 12),
                         child: new Card(
                           child: ListTile(
                             title: Text(item.zona),
@@ -123,19 +127,20 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildTableControll() {
-    final width = MediaQuery.of(context).size.width;
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: width * 1.4,
-        child: ListView(
-          children: <Widget>[
-            _buildTable(),
+  Future<bool> _confirmDismiss() async {
+    bool val = null;
+    final bool res = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm"),
+          content: const Text("Are you sure you wish to delete this item?"),
+          actions: <Widget>[
+            FlatButton( child : Text ("Si") ,onPressed: () => ( { val = true , Navigator.of(context).pop() } )),
+            FlatButton(child : Text ("No"),onPressed: () => ({ val = false , Navigator.of(context).pop() })),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 
