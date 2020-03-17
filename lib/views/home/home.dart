@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 import 'package:fds_retail_count/views/detail/detail.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/zona.dart';
@@ -36,7 +39,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('App count FDS '),
+        title:   Text ('App count FDS ')    ,
         backgroundColor: AppColors.primaryColor,
         actions: <Widget>[
           IconButton(
@@ -51,16 +54,16 @@ class HomePageState extends State<HomePage> {
       ),
       //body: _buildTableControll(),
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        Expanded(
-          flex: 1,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 1, 12, 3),
           child: inputFieldName(),
         ),
-        Expanded(
-          flex: 1,
+        Padding(
+          padding: const EdgeInsets.all(12.0),
           child: ButtonBars(),
         ),
         Expanded(
-          flex: 8,
+          flex: 1,
           child: FutureBuilder<List<Zona_Field>>(
             //we call the method, which is in the folder db file database.dart
             future: DatabaseProvider.db.getAllZona(),
@@ -76,30 +79,31 @@ class HomePageState extends State<HomePage> {
                     Zona_Field item = snapshot.data[index];
                     //delete one register for id
                     return Dismissible(
+                      //TRANSFROMAR EN FUNCIÓN
                       key: UniqueKey(),
                       background: Container(color: Colors.red),
                       onDismissed: (diretion) {
                         DatabaseProvider.db
                             .deleteZonaWithIddate(item.zona, item.date);
                       },
-                      //Now we paint the list with all the records, which will have a number, name, phone
-                      child: Card(
-                        child: ListTile(
-                          title: Text(item.zona),
-                          subtitle: Text(item.date),
-                          leading: CircleAvatar(
-                              child: Text(item.canti_count.toString())),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => DetailPage(
-                                          namezone: item.zona,
-                                          date: item.date,
-                                        )));
-                          },
-                          //If we press one of the cards, it takes us to the page to edit, with the data onTap:
-                          //This method is in the file add_editclient.dart
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 12 , right: 12),
+                        child: new Card(
+                          child: ListTile(
+                            title: Text(item.zona),
+                            subtitle: Text(item.date),
+                            leading: CircleAvatar(
+                                child: Text(item.canti_count.toString())),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => DetailPage(
+                                            namezone: item.zona,
+                                            date: item.date,
+                                          )));
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -228,11 +232,16 @@ class HomePageState extends State<HomePage> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
+      //children: <Widget>[
+      //ButtonBar(
       children: <Widget>[
-        ButtonBar(
-          children: <Widget>[
-            FlatButton(
-              child: Text('Eliminar todo'),
+        Expanded(
+            flex: 5,
+            child: new FlatButton(
+              child: Text(
+                'Eliminar todo',
+                style: TextStyle(color: Colors.white),
+              ),
               color: Colors.red,
               onPressed: () {
                 showDialog(
@@ -254,8 +263,8 @@ class HomePageState extends State<HomePage> {
 
                 /** */
               },
-            ),
-            FlatButton(
+            )),
+        /* FlatButton(
               child: Text('Modificar'),
               color: Colors.blue,
               onPressed: () {
@@ -277,9 +286,14 @@ class HomePageState extends State<HomePage> {
                 }
                 /** */
               },
-            ),
-            FlatButton(
-              child: Text('Nuevo'),
+            ),*/
+        Expanded(
+            flex: 5,
+            child: new FlatButton(
+              child: Text(
+                'Nuevo',
+                style: TextStyle(color: Colors.white),
+              ),
               color: Colors.green,
               onPressed: () {
                 print("entre");
@@ -300,10 +314,10 @@ class HomePageState extends State<HomePage> {
                               FormPage(namezone: zoneNameController.text)));
                 }
               },
-            ),
-          ],
-        )
+            )),
       ],
+      //  )
+      //],
     );
   }
 
@@ -327,20 +341,18 @@ class HomePageState extends State<HomePage> {
 
   void _getAllZonasId(var id) {
     setState(() {
+      ZonasCount.clear();
 
+      final zonafield = DatabaseProvider.db.getZonaWithId(id);
 
-    ZonasCount.clear();
-
-    final zonafield = DatabaseProvider.db.getZonaWithId(id);
-
-    zonafield.then((res) {
-      for (int i = 0; i < res.length; i++) {
-        print(res[i].zona.toString() + "" + res[i].material.toString());
-        ZonasCount.add(res[i]);
-      }
-    }).catchError((onError) {
-      print('Caught $onError'); // Handle the error.
-    });
+      zonafield.then((res) {
+        for (int i = 0; i < res.length; i++) {
+          print(res[i].zona.toString() + "" + res[i].material.toString());
+          ZonasCount.add(res[i]);
+        }
+      }).catchError((onError) {
+        print('Caught $onError'); // Handle the error.
+      });
     });
   }
 }
