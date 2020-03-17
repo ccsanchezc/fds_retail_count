@@ -12,9 +12,10 @@ class DetailPage extends StatefulWidget {
   String namezone;
   String date;
 
-  DetailPage({Key key, @required this.namezone , @required this.date}) : super(key: key);
+  DetailPage({Key key, @required this.namezone, @required this.date})
+      : super(key: key);
   @override
-  DetailPageState createState() => DetailPageState(this.namezone,this.date);
+  DetailPageState createState() => DetailPageState(this.namezone, this.date);
 }
 
 class DetailPageState extends State<DetailPage> {
@@ -49,7 +50,7 @@ class DetailPageState extends State<DetailPage> {
       //body: _buildTableControll(),
       body: FutureBuilder<List<Zona_Field>>(
         //we call the method, which is in the folder db file database.dart
-        future: DatabaseProvider.db.getZonaWithIddate(this.namezone , this.date),
+        future: DatabaseProvider.db.getZonaWithIddate(this.namezone, this.date),
         builder:
             (BuildContext context, AsyncSnapshot<List<Zona_Field>> snapshot) {
           if (snapshot.hasData) {
@@ -65,18 +66,22 @@ class DetailPageState extends State<DetailPage> {
                   key: UniqueKey(),
                   background: Container(color: Colors.red),
                   onDismissed: (diretion) {
-                    DatabaseProvider.db
-                        .deleteZonaWithIdMat(item.zona, item.date,item.material);
+                    DatabaseProvider.db.deleteZonaWithIdMat(
+                        item.zona, item.date, item.material);
                   },
                   //Now we paint the list with all the records, which will have a number, name, phone
-                  child: Card(
-                    child: ListTile(
-                      title: Text(item.name),
-                      subtitle: Text(item.material),
-                      leading: CircleAvatar(
-                          child: Text(item.canti_count.toString())),
-                      //If we press one of the cards, it takes us to the page to edit, with the data onTap:
-                      //This method is in the file add_editclient.dart
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 12, right: 12),
+                    child: Card(
+                      child: ListTile(
+                        onTap: ,
+                        title: Text(item.name),
+                        subtitle: Text(item.material),
+                        leading: CircleAvatar(
+                            child: Text(item.canti_count.toString())),
+                        //If we press one of the cards, it takes us to the page to edit, with the data onTap:
+                        //This method is in the file add_editclient.dart
+                      ),
                     ),
                   ),
                 );
@@ -93,6 +98,4 @@ class DetailPageState extends State<DetailPage> {
       backgroundColor: AppColors.statusBarColor,
     );
   }
-
-
 }

@@ -74,6 +74,7 @@ class FormPageState extends State<FormPage> {
               labelText: 'Codigo de barras',
             ),
             controller: this.bar_code,
+            autofocus: true,
             onChanged: (value) {
               if (value.length > 0) {
                 var promise =

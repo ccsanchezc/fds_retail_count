@@ -3,6 +3,8 @@ import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:fds_retail_count/utils/FileUtils.dart';
 import 'package:fds_retail_count/db/database.dart';
 import 'dart:convert';
+import 'package:fds_retail_count/utils/colors.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class FileManagerPage extends StatefulWidget {
   @override
@@ -10,6 +12,53 @@ class FileManagerPage extends StatefulWidget {
 }
 
 class FileManagerPageState extends State<FileManagerPage> {
+  final logo = Hero(
+    tag: 'hero',
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: 48.0,
+      child: Image.asset('assets/logo.png'),
+    ),
+  );
+
+  final email = TextFormField(
+    keyboardType: TextInputType.emailAddress,
+    autofocus: false,
+    initialValue: 'USERSAP',
+    decoration: InputDecoration(
+      hintText: 'User',
+      contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 10.0),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+    ),
+  );
+
+  final password = TextFormField(
+    autofocus: false,
+    initialValue: 'some password',
+    obscureText: true,
+    decoration: InputDecoration(
+      hintText: 'Password',
+      contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 5.0),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+    ),
+  );
+
+  final loginButton = Padding(
+    padding: EdgeInsets.symmetric(vertical: 10.0),
+    child: RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      onPressed: () {
+        print("Loggin!");
+      },
+      padding: EdgeInsets.fromLTRB(20.0, 2.0, 20.0, 10.0),
+      color: Colors.lightBlueAccent,
+      child: Text('Log In', style: TextStyle(color: Colors.white)),
+    ),
+  );
+
+
   @override
   void initState() {
     super.initState();
@@ -17,90 +66,87 @@ class FileManagerPageState extends State<FileManagerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.add)),
-                Tab(icon: Icon(Icons.storage))
-              ],
-            ),
-            title: Text('Configuración'),
-          ),
-          body: TabBarView(
-            children: [
-              FilesManager(),
-              Text("Conexión SAP..."),
-            ],
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Configuración'),
+        backgroundColor: AppColors.primaryColor,
+      ),
+      body: _logginSap(),
+      floatingActionButton: _floatAction(),
+      backgroundColor: AppColors.statusBarColor,
+    );
+  }
+
+  _logginSap() {
+    return Center(
+      child: ListView(
+        //shrinkWrap: true,
+        padding: EdgeInsets.only(top: 8.0, left: 24.0, right: 24.0),
+        children: <Widget>[
+          logo,
+          SizedBox(height: 20.0),
+          email,
+          SizedBox(height: 8.0),
+          password,
+          SizedBox(height: 24.0),
+          loginButton,
+
+        ],
       ),
     );
   }
 
-  Widget FilesManager() {
-    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      Expanded(
-        flex: 1,
-        child: FlatButton(
-          color: Colors.blue,
-          textColor: Colors.white,
-          disabledColor: Colors.grey,
-          disabledTextColor: Colors.black,
-          padding: EdgeInsets.all(8.0),
-          splashColor: Colors.blueAccent,
-          onPressed: () {
-            final promise = FileUtils.readFromFile();
-            promise.then((res) {
-              _format(res);
-              return showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("Alerta"),
-                      content: Text("Se cargo correctamente el archivo"),
-                    );
-                  });
-            }).catchError((onError) {
-              print('Caught $onError'); // Handle the error.
-            });
-          },
-          child: Text(
-            "Cargar TXT",
-            style: TextStyle(fontSize: 20.0),
-          ),
+  _floatAction() {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      // this is ignored if animatedIcon is non null
+      // child: Icon(Icons.add),
+      //visible: _dialVisible,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      onOpen: () => print('OPENING DIAL'),
+      onClose: () => print('DIAL CLOSED'),
+      tooltip: 'Speed Dial',
+      heroTag: 'speed-dial-hero-tag',
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      elevation: 5.0,
+      shape: CircleBorder(),
+      children: [
+        SpeedDialChild(
+            child: Icon(Icons.file_upload),
+            backgroundColor: Colors.red,
+            label: 'Cargar TXT',
+            //labelStyle: TextTheme(fontSize: 18.0),
+            onTap: () => _import()),
+        SpeedDialChild(
+          child: Icon(Icons.file_download),
+          backgroundColor: Colors.blue,
+          label: 'Descargar TXT',
+          //labelStyle: TextTheme(fontSize: 18.0),
+          onTap: () => _export(),
         ),
-      ),
-      Expanded(
-        flex: 1,
-        child: FlatButton(
-          color: Colors.green,
-          textColor: Colors.white,
-          disabledColor: Colors.grey,
-          disabledTextColor: Colors.black,
-          padding: EdgeInsets.all(8.0),
-          splashColor: Colors.blueAccent,
-          onPressed: () {
-            _export();
-          },
-          child: Text(
-            "Descargar TXT",
-            style: TextStyle(fontSize: 20.0),
-          ),
-        ),
-      ),
-      Expanded(
-        flex: 8,
-        child: Text(
-          "",
-          style: TextStyle(fontSize: 20.0),
-        ),
-      ),
-    ]);
+      ],
+    );
+  }
+
+  _import() {
+    final promise = FileUtils.readFromFile();
+    promise.then((res) {
+      _format(res);
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Alerta"),
+              content: Text("Se cargo correctamente el archivo"),
+            );
+          });
+    }).catchError((onError) {
+      print('Caught $onError'); // Handle the error.
+    });
   }
 
   _export() {
