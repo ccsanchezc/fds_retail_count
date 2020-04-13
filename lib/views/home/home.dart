@@ -54,8 +54,8 @@ class HomePageState extends State<HomePage> {
       ),
       //body: _buildTableControll(),
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12, 1, 12, 3),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 1, 12, 3),
           child: inputFieldName(),
         ),
         Padding(
