@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "68842306254",
+    "firebase_url": "https://fds-retail.firebaseio.com",
+    "project_id": "fds-retail",
+    "storage_bucket": "fds-retail.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68842306254:android:1abd9dac9e93b947b3ee9f",
+        "android_client_info": {
+          "package_name": "com.example.fds_retail_count"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68842306254-ep5iqoem5154e5op19pgl9u57r9kdkth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5fzYrEdiYyTl0153WjXGfApQMhJxBCrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68842306254-ep5iqoem5154e5op19pgl9u57r9kdkth.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

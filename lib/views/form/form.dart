@@ -7,7 +7,7 @@ import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
 import 'package:fds_retail_count/db/database.dart';
-
+import 'package:fds_retail_count/db/firestore.dart'; //firestore
 class FormPage extends StatefulWidget {
   String namezone;
 

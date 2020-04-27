@@ -108,12 +108,12 @@ class Zona_Field {
   //para recibir los datos necesitamos pasarlo de Map a json
   //factory Material_data.fromMap(Map<String, dynamic> json) => new Material_data(
   factory Zona_Field.fromMap(dynamic json) => new Zona_Field(
-        zona: json["zona"],
-        material: json["material"],
-        bar_code: json["bar_code"],
-        name: json["name"],
+        zona: json["zona"].toString(),
+        material: json["material"].toString(),
+        bar_code: json["bar_code"].toString(),
+        name: json["name"].toString(),
         canti_count: json["canti_count"],
-        date: json["date"],
+        date: json["date"].toString(),
       );
 
 }

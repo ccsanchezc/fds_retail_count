@@ -84,11 +84,9 @@ class HomePageState extends State<HomePage> {
                       key: UniqueKey(),
                       background: Container(color: Colors.red),
                       onDismissed: (diretion) {
-                      if (_confirmDismiss()== true){
+                     // if (_confirmDismiss()== true){
                         DatabaseProvider.db
                             .deleteZonaWithIddate(item.zona, item.date);
-
-                      }
 
 
                       },
