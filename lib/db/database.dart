@@ -130,12 +130,8 @@ class DatabaseProvider {
     print("voy a traer documentos");
     final QuerySnapshot result = await fire.ref.getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
-   //documents.map((data) => list2 = getDocument(data.documentID, fire)).toList();
-    // documents.map((data) =>  liss.add(data.documentID)).toList();
-     // list2 = getDocument(liss, fire);
-   documents.forEach((data) =>   liss.add(data.documentID));
-    list2 = getDocument(liss, fire);
-    //List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+     documents.map((data) =>  liss.add(data.documentID)).toList();
+      list2 = getDocument(liss, fire);
 
     return list2;
   }
@@ -147,14 +143,9 @@ class DatabaseProvider {
       final QuerySnapshot result =
       await fire.ref.document(resulta[i]).collection("material").getDocuments();
       final List<DocumentSnapshot> documents = result.documents;
-      // documents.map((c) =>Zona_Field.fromMap(c.data)).toList();
       documents.map((data) => list.add(Zona_Field.fromMap(data.data))).toList();
     }
-  //  final QuerySnapshot result =
-     //   await fire.ref.document(resulta).collection("material").getDocuments();
-   // final List<DocumentSnapshot> documents = result.documents;
-    // documents.map((c) =>Zona_Field.fromMap(c.data)).toList();
-   /// documents.map((data) => list.add(Zona_Field.fromMap(data.data))).toList();
+
 
     return  list;
   }
