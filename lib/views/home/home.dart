@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
+import 'package:fds_retail_count/views/Login/login.dart';
 import 'package:fds_retail_count/views/detail/detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:date_format/date_format.dart';
 import 'package:fds_retail_count/views/form/form.dart';
 import 'package:fds_retail_count/db/database.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,8 +20,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  bool logeado = false;
   final zoneNameController = TextEditingController();
   final List<String> log = <String>[];
+
   List<Zona_Field> selectedZona;
   @override
   void initState() {
@@ -30,7 +34,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     zoneNameController.dispose();
     super.dispose();
   }
@@ -45,17 +48,19 @@ class HomePageState extends State<HomePage> {
           IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FileManagerPage()),
-                );
+                if (logeado) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FileManagerPage()),
+                  );
+                }
               }),
         ],
       ),
       //body: _buildTableControll(),
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 1, 12, 3),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 1, 12, 3),
           child: inputFieldName(),
         ),
         Padding(
@@ -69,7 +74,7 @@ class HomePageState extends State<HomePage> {
             future: DatabaseProvider.db.getAllZona(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<Zona_Field>> snapshot) {
-              if (snapshot.hasData) {
+              if (snapshot.hasData == true && logeado == true) {
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
                   //Count all records
@@ -84,11 +89,9 @@ class HomePageState extends State<HomePage> {
                       key: UniqueKey(),
                       background: Container(color: Colors.red),
                       onDismissed: (diretion) {
-                     // if (_confirmDismiss()== true){
+                        // if (_confirmDismiss()== true){
                         DatabaseProvider.db
                             .deleteZonaWithIddate(item.zona, item.date);
-
-
                       },
                       child: Padding(
                         padding: EdgeInsets.only(left: 12, right: 12),
@@ -114,7 +117,12 @@ class HomePageState extends State<HomePage> {
                   },
                 );
               } else {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: Container(
+                    padding: EdgeInsets.all(16.0),
+                    child: logeado ? LinearProgressIndicator() : Text("Presione boton para iniciar sesión "),
+                  ),
+                );
               }
             },
           ),
@@ -123,8 +131,55 @@ class HomePageState extends State<HomePage> {
         ),
         //_buildTableControll()),
       ]),
+      floatingActionButton: _floatAction(),
       backgroundColor: AppColors.statusBarColor,
     );
+  }
+
+  _floatAction() {
+    if(!logeado){
+
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      // this is ignored if animatedIcon is non null
+      // child: Icon(Icons.add),
+      //visible: _dialVisible,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      onOpen: () => print('OPENING DIAL'),
+      onClose: () => print('DIAL CLOSED'),
+      tooltip: 'Speed Dial',
+      heroTag: 'speed-dial-hero-tag',
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      elevation: 5.0,
+      shape: CircleBorder(),
+      children: [
+        SpeedDialChild(
+            child: Icon(Icons.file_upload),
+            backgroundColor: Colors.red,
+            label: 'Ingresar al sistema',
+            onTap: () => _navigateAndDisplaySelection(context)),
+      ],
+    );
+
+    }
+  }
+
+  _navigateAndDisplaySelection(BuildContext context) async {
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+    if(result != null){
+      setState(() {
+        this.logeado = true;
+      });
+    }
+
   }
 
   Future<bool> _confirmDismiss() async {
@@ -136,8 +191,12 @@ class HomePageState extends State<HomePage> {
           title: const Text("Confirm"),
           content: const Text("Are you sure you wish to delete this item?"),
           actions: <Widget>[
-            FlatButton( child : Text ("Si") ,onPressed: () => ( { val = true , Navigator.of(context).pop() } )),
-            FlatButton(child : Text ("No"),onPressed: () => ({ val = false , Navigator.of(context).pop() })),
+            FlatButton(
+                child: Text("Si"),
+                onPressed: () => ({val = true, Navigator.of(context).pop()})),
+            FlatButton(
+                child: Text("No"),
+                onPressed: () => ({val = false, Navigator.of(context).pop()})),
           ],
         );
       },
@@ -209,19 +268,21 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget inputFieldName() {
-    return TextFormField(
-      controller: zoneNameController,
-      decoration: const InputDecoration(
-        hintText: '¿Como se llamará la zona?',
-        labelText: 'Nombre de Zona',
-      ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-    );
+    if (logeado == true) {
+      return TextFormField(
+        controller: zoneNameController,
+        decoration: const InputDecoration(
+          hintText: '¿Como se llamará la zona?',
+          labelText: 'Nombre de Zona',
+        ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Please enter some text';
+          }
+          return null;
+        },
+      );
+    }
   }
 
   // ignore: non_constant_identifier_names
@@ -233,97 +294,76 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget ButtonBars() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      //children: <Widget>[
-      //ButtonBar(
-      children: <Widget>[
-        Expanded(
-            flex: 5,
-            child: new FlatButton(
-              child: Text(
-                'Eliminar todo',
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.red,
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Alerta"),
-                        content: Text("Se eliminaran todos los registros"),
-                        actions: <Widget>[
-                          FlatButton(
-                              onPressed: DatabaseProvider.db.deleteAllZona(),
-                              child: Text('OK')),
-                          FlatButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text('CANCEL')),
-                        ],
-                      );
-                    });
+    if(logeado) {
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        //children: <Widget>[
+        //ButtonBar(
+        children: <Widget>[
+          Expanded(
+              flex: 5,
+              child: new FlatButton(
+                child: Text(
+                  'Eliminar todo',
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: Colors.red,
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Alerta"),
+                          content: Text("Se eliminaran todos los registros"),
+                          actions: <Widget>[
+                            FlatButton(
+                                onPressed: DatabaseProvider.db.deleteAllZona(),
+                                child: Text('OK')),
+                            FlatButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('CANCEL')),
+                          ],
+                        );
+                      });
 
-                /** */
-              },
-            )),
-        /* FlatButton(
-              child: Text('Modificar'),
-              color: Colors.blue,
-              onPressed: () {
-                if (selectedZona.length == 1) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              FormPage(namezone: selectedZona.first.name)));
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Alerta"),
-                          content: Text("Solo se puede modificar 1 zona"),
-                        );
-                      });
-                }
-                /** */
-              },
-            ),*/
-        Expanded(
-            flex: 5,
-            child: new FlatButton(
-              child: Text(
-                'Nuevo',
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.green,
-              onPressed: () {
-                print("entre");
-                if (zoneNameController.text.isEmpty) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Alerta"),
-                          content: Text("Nombre de zona está vacio"),
-                        );
-                      });
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              FormPage(namezone: zoneNameController.text)));
-                }
-              },
-            )),
-      ],
-      //  )
-      //],
-    );
+                  /** */
+                },
+              )),
+          Expanded(
+              flex: 5,
+              child: new FlatButton(
+                child: Text(
+                  'Nuevo',
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: Colors.green,
+                onPressed: () {
+                  print("entre");
+                  if (zoneNameController.text.isEmpty) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Alerta"),
+                            content: Text("Nombre de zona está vacio"),
+                          );
+                        });
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                FormPage(namezone: zoneNameController.text)));
+                  }
+                },
+              )),
+        ],
+        //  )
+        //],
+      );
+    }
   }
 
   void _getAllZonas() async {

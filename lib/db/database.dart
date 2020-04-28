@@ -1,3 +1,4 @@
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,14 +50,13 @@ class DatabaseProvider {
           "PRIMARY KEY (zona, material)) ");
     });
   }
-
   //Query
   //muestra todos los clientes de la base de datos
   Future<List<Material_data>> getAllMaterial() async {
     final db = await database;
     var response = await db.query("Material");
     List<Material_data> list =
-        response.map((c) => Material_data.fromMap(c)).toList();
+    response.map((c) => Material_data.fromMap(c)).toList();
     return list;
   }
 
@@ -65,14 +65,14 @@ class DatabaseProvider {
   Future<Material_data> getMaterialWithId(var id) async {
     final db = await database;
     var response =
-        await db.query("Material", where: "material = ?", whereArgs: [id]);
+    await db.query("Material", where: "material = ?", whereArgs: [id]);
     return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
   Future<Material_data> getMaterialBarCodeWithId(var id) async {
     final db = await database;
-    var response =
-        await db.query("Material", where: "bar_code = ?", whereArgs: [id]);
+   var response =
+    await db.query("Material", where: "bar_code = ?", whereArgs: [id]);
     return response.isNotEmpty ? Material_data.fromMap(response.first) : null;
   }
 
@@ -120,14 +120,16 @@ class DatabaseProvider {
   //Query
   //muestra todos los clientes de la base de datos
   Future<List<Zona_Field>> getAllZona() async {
+
     final db = await database;
     final fire = await Api("zona");
     Future<List<Zona_Field>>  list2 =  null;
-    List<Zona_Field> list = null;
     List<String> liss = new List<String>();
+    List<Zona_Field> list = null;
+
     var response = await db.rawQuery(
         'SELECT zona,date, SUM(canti_count) as canti_count from ZONA GROUP BY zona,date');
-    print("voy a traer documentos");
+
     final QuerySnapshot result = await fire.ref.getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
      documents.map((data) =>  liss.add(data.documentID)).toList();
@@ -145,8 +147,6 @@ class DatabaseProvider {
       final List<DocumentSnapshot> documents = result.documents;
       documents.map((data) => list.add(Zona_Field.fromMap(data.data))).toList();
     }
-
-
     return  list;
   }
 
@@ -162,13 +162,19 @@ class DatabaseProvider {
 
   Future<List<Zona_Field>> getZonaWithIddate(var id, var date) async {
     final db = await database;
-    print("entre a traer cosas");
-    print("ID" + id + "Date" + date);
-    var response = await db
-        .query("Zona ", where: "zona = ? and date = ?", whereArgs: [id, date]);
+    final fire = await Api("zona");
+    List<Zona_Field> list =  null;
+    List<String> liss = new List<String>();
 
-    print(response);
-    List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+   // var response = await db
+      //  .query("Zona ", where: "zona = ? and date = ?", whereArgs: [id, date]);
+   // List<Zona_Field> list = response.map((c) => Zona_Field.fromMap(c)).toList();
+
+    final QuerySnapshot result = await fire.ref.document(id).collection("material").getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    list = documents.map((c) => Zona_Field.fromMap(c.data)).toList();
+    //documents.map((data) => list.add(Zona_Field.fromMap(data.data))).toList();
+   // list = getDocument(liss, fire);
     return list;
   }
 

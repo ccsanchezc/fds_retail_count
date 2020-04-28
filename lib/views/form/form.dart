@@ -61,6 +61,7 @@ class FormPageState extends State<FormPage> {
   }
 
   Widget FormBuilder() {
+
     return Form(
       key: _formKey,
       autovalidate: true,
@@ -75,7 +76,7 @@ class FormPageState extends State<FormPage> {
             ),
             controller: this.bar_code,
             autofocus: true,
-            onChanged: (value) {
+            onChanged: (value)  {
               if (value.length > 0) {
                 var promise =
                     DatabaseProvider.db.getMaterialBarCodeWithId(value);
@@ -100,10 +101,13 @@ class FormPageState extends State<FormPage> {
               labelText: 'Material',
             ),
             controller: this.material,
-            onChanged: (value) {
+            onChanged: (value)  {
               if (value.length > 0) {
+
                 var promise = DatabaseProvider.db.getMaterialWithId(value);
+
                 promise.then((res) {
+                  print("estoy melo" + res.material.toString() );
                   this.materialinfo = res;
                   _updatecontroller();
                 }).catchError((onError) {
