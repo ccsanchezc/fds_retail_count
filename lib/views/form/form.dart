@@ -102,7 +102,7 @@ class FormPageState extends State<FormPage> {
             ),
             controller: this.material,
             onChanged: (value)  {
-              if (value.length > 0) {
+              if (value.length > 15) {
 
                 var promise = DatabaseProvider.db.getMaterialWithId(value);
 

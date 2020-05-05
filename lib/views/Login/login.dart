@@ -25,7 +25,7 @@ class LoginPageState extends State<LoginPage>
   String _correo;
   String _contrasena;
   String mensaje = '';
-
+  bool _set = false;
   bool _logueado = false;
 
   initState() {
@@ -148,16 +148,17 @@ class LoginPageState extends State<LoginPage>
                   onSaved: (text) => _contrasena = text,
                 ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_key.currentState.validate()) {
+                      var valui;
+
                       _key.currentState.save();
-                      //Aqui se llamaria a su API para hacer el login
+
                       try {
-                        var valui = auth.signIn(_correo, _contrasena);
-                        if (valui != null) {
-                          Navigator.pop(context, valui);
-                        }
+                        valui = await auth.signIn(_correo, _contrasena);
+                        _set = true;
                       } catch (error) {
+                        _set = false;
                         switch (error.code) {
                           case "ERROR_USER_NOT_FOUND":
                             {
@@ -166,7 +167,7 @@ class LoginPageState extends State<LoginPage>
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       content: Container(
-                                        child: Text("errorMsg"),
+                                        child: Text("Usuario no Encontrado"),
                                       ),
                                     );
                                   });
@@ -179,7 +180,7 @@ class LoginPageState extends State<LoginPage>
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       content: Container(
-                                        child: Text("errorMsg"),
+                                        child: Text("Correo invalido"),
                                       ),
                                     );
                                   });
@@ -191,7 +192,7 @@ class LoginPageState extends State<LoginPage>
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     content: Container(
-                                      child: Text("Contraseña mala"),
+                                      child: Text("Contraseña incorrecta"),
                                     ),
                                   );
                                 });
@@ -199,9 +200,10 @@ class LoginPageState extends State<LoginPage>
                             break;
                         }
                       }
-
-//                      Una forma correcta de llamar a otra pantalla
-//                      Navigator.of(context).push(HomeScreen.route(mensaje));
+                      if (valui != null && _set == true) {
+                        Navigator.pop(context, valui);
+                      }
+//
                     }
                   },
                   icon: Icon(
@@ -211,11 +213,11 @@ class LoginPageState extends State<LoginPage>
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
                       //Aqui se llamaria a su API para hacer el login
-                      var valui = auth.signUp(_correo, _contrasena);
+                      var valui = await auth.signUp(_correo, _contrasena);
                       if (valui != null) {
                         Navigator.pop(context, valui);
                       }
