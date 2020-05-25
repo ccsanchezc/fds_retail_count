@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fds_retail_count/models/masterdata.dart';
+import 'package:fds_retail_count/views/chatbot/chabot.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/masterdata.dart';
@@ -49,11 +50,11 @@ class DetailPageState extends State<DetailPage> {
         backgroundColor: AppColors.primaryColor,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.dashboard),
+              icon: Icon(Icons.message),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MainPage()),
+                  MaterialPageRoute(builder: (context) => FlutterFactsDialogFlow() ),
                 );
               }),
         ],

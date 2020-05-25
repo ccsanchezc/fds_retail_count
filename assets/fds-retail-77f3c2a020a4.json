@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "fds-retail",
+  "private_key_id": "77f3c2a020a4afa2d05af15e7d36498df93d0167",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8sCuKV9dNxr1e\ndZpmL8zOdw/TqG5/teEBncBRKlwm5qUfA7+LmnTOSApthVnmSdxfa8M3/+lmNeAL\nOXnq0lQrMyi5KSonClMnOt9rU1IZbuLhM9x/Q2chzi7/Ykgn9Wx2aI1YvEcxmLXY\n5IvQ4uYGgtoS981mG007+oAzrQC1iynB5Gmum/eyaFI6DiPMfTqNBwSrmiEJ+dK9\nuaqoPjSf52gztSNpCsCGHhOmIlVzxvHwXrMOXw3ptTPkiwIQbJz+ECnNDjJE3FL+\njtFSvbUdR5J9x5ytE5FPqCFDk9Pjftu3AQH7rVBDAxdTT9ILq092g/rbFmR9pfhU\ndSRpaMcLAgMBAAECggEADURVy2RhvxY6OmoKcSTrQZkdg8RUAKbJK1PsMcjIsfOF\nqKiazzYNAHQQR6MYrxiCZjMthsJ3prgjCKcB64DeaisusdYzIIuZTSjWjLVPEHq7\neRosZsZWegoFQ++lIyoedjTju1mBp/sUzitDqWxKwCpzKuJBjuxcgdsbKIcBhcIk\nOYU+ZmZSJfry+hMVJQyltGyjBa7US1CHyjVnvQGJ6sepbtwCNDWFwxszNTNv39lV\nGIfsPcNBNMZyTKS9e5LGdD/MDpcreZeC2q9t0crPkQYM54lSVT9YAgW1P7REdC/r\nAGLzD9fzqnZ+sx34XavZEAtUod20v0MBn9VZH3eAAQKBgQDoIEKsPpdTTfMYZ9Pt\nK3RAyBIzLz/Xd/wA+hXSKN05UwN/vIY0xEcpvaOJpe8I0zVTJhRxm2M+FYspj/Ja\n7gcTQU887kaBDVQR4ap6GrIADC5n48uDEK9aMUgACqIdrfBHpGVRxSk8FGk3ErkH\nr58Tp8PptsDcaxG3G6uZZWoUKwKBgQDQGDeFrfpjtYIPw6slSdMLfNOEBgcRAbkz\n1ZLZQKQnD3geU1NRTFWzoxeFiLhZxysfk1g2d3TCDKDCKKZQAX5QdUuTLpnMuuwB\n4TWlX5D3E3PyvE436aGzfLmA6/iXhGzYgA4p1edwfgld8MYnC9BN0EiyL8J/WiX7\nuxELoxJIoQKBgGUbeC8SbFOKxnJA91x86vw0qUjGMeamiovaYprR1dpcQE/pTAO7\n4stZoNwZ/M45QSbglVMOveGS/LSz0Hqu50IJ1nvRxb/8kDvhsaHR8up2Y9g4rrJ+\nGAMPKC9sckS/OMPb5Y4CdP2IXnPwocupQX8MOheY1NSthl/dm5cLR3NVAoGBAKOr\niG/yKNAnwMZZZdEMQZv1b/+VJhWwP1SPlNKfTv0R464mZ4+39Gg3zJZQtH6YckiB\ngY5FYmYFvKM5iaW/pvPtbaWzr3AhTOMlmSYbBk/u0vGGPhcoAPDFFrpZ3sp9c4bN\nIVayUThfSUrDx3aKiinJuoO7oMS9yMY3me6HMihBAoGBAI0al6D0HHTryIcIFwF2\nhR9M781X3fA4kewJsMBzNK0G/Vc/ZteaZUxZQVstr76QeIEDsBkkSRu3xmuA2Aaa\nhFSiFa4SNLGiyCBiqblatZS9cjhuOYxentF73BXjBCla6mrzph6sRQh6OIoTOmnq\n7Zuudz6K639TAM3TLlLN913E\n-----END PRIVATE KEY-----\n",
+  "client_email": "dialogflow-hefeuw@fds-retail.iam.gserviceaccount.com",
+  "client_id": "103174120720767478993",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dialogflow-hefeuw%40fds-retail.iam.gserviceaccount.com"
+}
