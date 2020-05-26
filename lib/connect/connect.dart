@@ -13,7 +13,7 @@ class connect {
     };
     String basicAuth =
        'Basic ' + base64Encode(utf8.encode('$user:$pass'));
-     //'Basic ' + base64Encode(utf8.encode('CON_ABAP2:Ronny1033801286****'));
+     
 
 
     var uri = Uri.http('fdseccdev.fueradeserie.com.co:8004',
