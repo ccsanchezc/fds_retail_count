@@ -1,3 +1,4 @@
+import 'package:fds_retail_count/IteratorMaterialData/IteratorMatData.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:fds_retail_count/utils/FileUtils.dart';
@@ -5,7 +6,7 @@ import 'package:fds_retail_count/db/database.dart';
 import 'dart:convert';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:fds_retail_count/db/firestore.dart';
+import 'package:fds_retail_count/connect/connect.dart';
 
 class FileManagerPage extends StatefulWidget {
   @override
@@ -83,11 +84,11 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
                     if (text.length == 0) {
                       return "Este campo correo es requerido";
                     }
-                   //   return "El formato para correo no es correcto";
-                  //  }
+                    //   return "El formato para correo no es correcto";
+                    //  }
                     return null;
                   },
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   maxLength: 50,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
@@ -100,6 +101,7 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
                   onSaved: (text) => _correo = text,
                 ),
                 TextFormField(
+                  obscureText: true,
                   validator: (text) {
                     if (text.length == 0) {
                       return "Este campo contraseña es requerido";
@@ -107,7 +109,7 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
                       return "Su contraseña debe ser al menos de 5 caracteres";
                     } //else if (!contRegExp.hasMatch(text)) {
                     //  return "El formato para contraseña no es correcto";
-                  //  }
+                    //  }
                     return null;
                   },
                   controller: _passController,
@@ -123,13 +125,62 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
                   onSaved: (text) => _contrasena = text,
                 ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
-                      //Aqui se llamaria a su API para hacer el login
-                      setState(() {
-                        _logueado = true;
-                      });
+                      //var value = await connect.CallOdata(_correo,_contrasena);
+                      IteratorMatData value = new IteratorMatData(await connect.CallOdata(_correo,_contrasena));
+                      if(value.list != null){
+
+                        DatabaseProvider.db.deleteAllMaterial();
+                        setState(() async {
+                          print ("entre");
+                          value.calculate();
+
+                       //   await DatabaseProvider.db.addMaterialToDatabaseBatch(value.list);
+                            while(value.hasNext()){
+                           DatabaseProvider.db.deleteAllMaterial();
+                          DatabaseProvider.db.addMaterialToDatabase(value.getNext());
+                           //  DatabaseProvider.db.addMaterialToDatabaseBatch(value.list);
+                           }
+                          // DatabaseProvider.db.deleteAllMaterial();
+                          // for(int i= 0; i< value.length ;i++) {
+                          // DatabaseProvider.db.addMaterialToDatabase(
+                          //    value[i]);
+                          //}
+
+                          var valor = value.posi;
+                          var uni   = value.unida;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Alerta"),
+                                  content: Text("Se cargaron $valor, registros con $uni unidades"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                        child: new Text("Cerrar"),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        })
+                                  ],
+                                );
+                              });
+                          // Navigator.of(context).pop();
+                          //Navigator.pop(context);
+                          _logueado = true;
+                        });
+                      }else{
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Alerta"),
+                                content: Text("Falló conexión intente de nuevo"),
+                              );
+                            });
+                      }
+
                       mensaje = 'Gracias \n $_correo \n $_contrasena';
 //                      Una forma correcta de llamar a otra pantalla
 //                      Navigator.of(context).push(HomeScreen.route(mensaje));
@@ -148,43 +199,6 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
       ],
     );
   }
- /* final email = TextFormField(
-    keyboardType: TextInputType.emailAddress,
-    controller: _usernameController,
-    autofocus: false,
-    initialValue: 'USERSAP',
-    decoration: InputDecoration(
-      hintText: 'User',
-      contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 10.0),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-    ),
-  );
-
-  final password = TextFormField(
-    autofocus: false,
-    initialValue: 'some password',
-    obscureText: true,
-    decoration: InputDecoration(
-      hintText: 'Password',
-      contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 5.0),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-    ),
-  );
-
-  final loginButton = Padding(
-    padding: EdgeInsets.symmetric(vertical: 10.0),
-    child: RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      onPressed: () {
-        print("Loggin!" + _usernameController.text);
-      },
-      padding: EdgeInsets.fromLTRB(20.0, 2.0, 20.0, 10.0),
-      color: Colors.lightBlueAccent,
-      child: Text('Log In', style: TextStyle(color: Colors.white)),
-    ),
-  );*/
 
   @override
   Widget build(BuildContext context) {
@@ -374,6 +388,8 @@ class FileManagerPageState extends State<FileManagerPage>  with SingleTickerProv
     ;
   }
 }
+
+
 class AnimatedLogo extends AnimatedWidget {
   // Maneja los Tween estáticos debido a que estos no cambian.
   static final _opacityTween = Tween<double>(begin: 0.1, end: 1.0);

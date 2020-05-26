@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fds_retail_count/models/masterdata.dart';
+import 'package:fds_retail_count/views/chatbot/chabot.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/utils/colors.dart';
 import 'package:fds_retail_count/models/masterdata.dart';
@@ -46,6 +47,16 @@ class FormPageState extends State<FormPage> {
       appBar: AppBar(
         title: Text('Nueva zona : ' + this.namezone),
         backgroundColor: AppColors.primaryColor,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FlutterFactsDialogFlow() ),
+                );
+              }),
+        ],
       ),
       //body: _buildTableControll(),
       body: SafeArea(
@@ -101,19 +112,15 @@ class FormPageState extends State<FormPage> {
               labelText: 'Material',
             ),
             controller: this.material,
-            onChanged: (value)  {
-              if (value.length > 15) {
-
-                var promise = DatabaseProvider.db.getMaterialWithId(value);
-
-                promise.then((res) {
-                  print("estoy melo" + res.material.toString() );
-                  this.materialinfo = res;
-                  _updatecontroller();
-                }).catchError((onError) {
-                  _clearcontroller();
-                  print('Caught $onError'); // Handle the error.
+            onChanged: (value) async{
+              if (value.length > 7) {
+                value = value.toString().padLeft(18, '0');
+                var promise = await DatabaseProvider.db.getMaterialWithId(value);
+                setState(() {
+                  this.materialinfo = promise;
+                   _updatecontroller();
                 });
+
               }
             },
             validator: (value) => value.isEmpty ? 'Material requerido' : null,
@@ -129,9 +136,10 @@ class FormPageState extends State<FormPage> {
               labelText: 'Nombre del material',
             ),
             controller: this.name,
+            enabled: false,
             validator: (value) =>
                 value.isEmpty ? 'Nombre Material requerido' : null,
-            keyboardType: TextInputType.text,
+            //keyboardType: TextInputType.text,
           ),
           new TextFormField(
             decoration: const InputDecoration(

@@ -1,11 +1,8 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 //import 'package:simple_permissions/simple_permissions.dart';
-
 import 'package:fds_retail_count/utils/Permissions.dart';
 import 'dart:io';
-
-import 'Permissions.dart';
 
 class FileUtils {
   //static Permission permission1 = Permission.WriteExternalStorage;
@@ -30,31 +27,22 @@ class FileUtils {
   }
 
   static Future<String> readFromFile() async {
+    try {
+      //final file = await getFile;
+      final file =
+          await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: 'txt');
+      String fileContents = await file.readAsString();
 
-    if (PermissionsService().requestStoragePermission() != false) {
-      try {
-        //final file = await getFile;
-        final file =
-        await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: 'txt');
-        String fileContents = await file.readAsString();
-
-
-        //  print(fileContents);
-        return fileContents;
-      } catch (e) {
-        return e.toString()+"";
-      }
-
-    }else{
-      return "error";
+      //  print(fileContents);
+      return fileContents;
+    } catch (e) {
+      return "";
     }
-
   }
 
   static Future<String> downloadFile() async {
     String dirloc = "";
 
-    // ignore: unrelated_type_equality_checks
     if (PermissionsService().requestStoragePermission() != false) {
       if (Platform.isAndroid) {
         dirloc = "/sdcard/download";

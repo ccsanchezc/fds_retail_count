@@ -55,6 +55,32 @@ class Material_data {
         mvgr1: json["mvgr1"],
         cantidad: json["cantidad"],
       );
+  Material_data.fromMap2(Map<String, dynamic> json) {
+
+    //new Material_data(
+
+    material = json["Material"].toString().padLeft(18, '0');
+    name = json["Name"];
+    color = json["Color"];
+    talla = json["Talla"];
+    bar_code = json["Barcode"];
+    depto =json["Depto"];
+    mvgr1 = json["Mvgr1"];
+    cantidad = json["Cantidad"];
+
+    cantidad = cantidad.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    if(cantidad == '000') {
+      cantidad = '0';
+    }
+    if(cantidad == 'UNO') {
+      cantidad = '1';
+    }
+    if(cantidad == 'D') {
+      cantidad = '10';
+    }
+    //  print("$material y $cantidad");
+    // );
+  }
 }
 
 final List<String> Material_model = [
@@ -116,4 +142,19 @@ class Zona_Field {
         date: json["date"].toString(),
       );
 
+}
+class TopTenUsersModelResponse {
+  List<Material_data> list;
+
+  TopTenUsersModelResponse({
+    this.list,
+  });
+
+  factory TopTenUsersModelResponse.fromJson(List<dynamic> parsedJson) {
+    List<Material_data> list = new List<Material_data>();
+    list = parsedJson.map((i) => Material_data.fromMap2(i)).toList();
+    final value = list.length;
+    print("tengo tantos" + '$value');
+    return new TopTenUsersModelResponse(list: list);
+  }
 }

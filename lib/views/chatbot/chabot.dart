@@ -54,7 +54,6 @@ class _FlutterFactsDialogFlowState extends State<FlutterFactsDialogFlow> {
       name: "Flutter Bot",
       type: false,
     );
-    print("voy a preguntar"  );
     setState(() {
       _messages.insert(0, message);
     });
@@ -64,7 +63,7 @@ class _FlutterFactsDialogFlowState extends State<FlutterFactsDialogFlow> {
     _textController.clear();
     FactsMessage message = new FactsMessage(
       text: text,
-      name: "Priyanka",
+      name: "User",
       type: true,
     );
     setState(() {
@@ -78,7 +77,7 @@ class _FlutterFactsDialogFlowState extends State<FlutterFactsDialogFlow> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Flutter Facts"),
+        title: Text("CHAT BOT"),
         backgroundColor: AppColors.primaryColor,
       ),
       body: Column( children: <Widget>[

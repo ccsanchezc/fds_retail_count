@@ -1,3 +1,5 @@
+import 'package:fds_retail_count/views/form/form.dart';
+import 'package:fds_retail_count/views/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:fds_retail_count/models/masterdata.dart';
 import 'package:fds_retail_count/utils/FileUtils.dart';
@@ -196,7 +198,6 @@ class LoginPageState extends State<LoginPage>
                                     ),
                                   );
                                 });
-
                             break;
                         }
                       }
@@ -217,7 +218,28 @@ class LoginPageState extends State<LoginPage>
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
                       //Aqui se llamaria a su API para hacer el login
-                      var valui = await auth.signUp(_correo, _contrasena);
+                      var valui;
+                      try {
+                      valui = await auth.signUp(_correo, _contrasena);
+                      } catch (error) {
+                        _set = false;
+                        switch (error.code) {
+
+                          case "ERROR_EMAIL_ALREADY_IN_USE":
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: Container(
+                                      child: Text("Usuario ya se encuentra registrado"),
+                                    ),
+                                  );
+                                });
+
+                            break;
+
+                        }
+                      }
                       if (valui != null) {
                         Navigator.pop(context, valui);
                       }

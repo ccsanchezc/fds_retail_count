@@ -10,7 +10,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     switch (settings.name) {
       case homeViewRoute:
-        return MaterialPageRoute(builder: (_) => HomePage());
+      return MaterialPageRoute(builder: (_) => HomePage());
+      //  return MaterialPageRoute(builder: (_) => LoginPage());
       case formViewRoute:
         return MaterialPageRoute(builder: (_) => FormPage()
         );

@@ -15,16 +15,20 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fds_retail_count/views/FileManager/FileManager.dart';
 
 class HomePage extends StatefulWidget {
+
   @override
   HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
+
   bool logeado = false;
   final zoneNameController = TextEditingController();
   final List<String> log = <String>[];
 
   List<Zona_Field> selectedZona;
+
+
   @override
   void initState() {
     super.initState();
@@ -302,7 +306,7 @@ class HomePageState extends State<HomePage> {
         //children: <Widget>[
         //ButtonBar(
         children: <Widget>[
-          Expanded(
+          /** Expanded(
               flex: 5,
               child: new FlatButton(
                 child: Text(
@@ -310,11 +314,11 @@ class HomePageState extends State<HomePage> {
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Colors.red,
-                onPressed: () {
+                onPressed: () async {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
+                        return AlertDialog (
                           title: Text("Alerta"),
                           content: Text("Se eliminaran todos los registros"),
                           actions: <Widget>[
@@ -328,9 +332,9 @@ class HomePageState extends State<HomePage> {
                         );
                       });
 
-                  /** */
+
                 },
-              )),
+              )),*/
           Expanded(
               flex: 5,
               child: new FlatButton(

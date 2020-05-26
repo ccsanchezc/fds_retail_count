@@ -134,8 +134,8 @@ class DatabaseProvider {
     List<String> liss = new List<String>();
     List<Zona_Field> list = null;
 
-    var response = await db.rawQuery(
-        'SELECT zona,date, SUM(canti_count) as canti_count from ZONA GROUP BY zona,date');
+   // var response = await db.rawQuery(
+  //      'SELECT zona,date, SUM(canti_count) as canti_count from ZONA GROUP BY zona,date');
 
     final QuerySnapshot result = await fire.ref.getDocuments();
     final List<DocumentSnapshot> documents = result.documents;
@@ -281,6 +281,13 @@ class DatabaseProvider {
   deleteAllZona() async {
     final db = await database;
     db.delete("Zona");
+    final fire = await Api("zona");
+    QuerySnapshot querySnapshot = await fire.ref.getDocuments();
+    for (int i = 0; i < querySnapshot.documents.length; i++) {
+      var a = querySnapshot.documents[i];
+      fire.ref.document(a.documentID).delete();
+    }
+
   }
 
   //Update

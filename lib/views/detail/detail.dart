@@ -48,16 +48,7 @@ class DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: Text('Zona: ' + this.namezone),
         backgroundColor: AppColors.primaryColor,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.message),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FlutterFactsDialogFlow() ),
-                );
-              }),
-        ],
+
       ),
       //body: _buildTableControll(),
       body: FutureBuilder<List<Zona_Field>>(
